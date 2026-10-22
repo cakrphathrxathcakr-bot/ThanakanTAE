@@ -1,3 +1,51 @@
+// VIP_MODEL_BEGIN
+/* แก้เกณฑ์และชื่อแรงค์ได้ที่ VIP_LEVELS แห่งเดียว ตัวเลขคอลัมน์แรกเป็นยอดเงินขั้นต่ำหน่วยบาท */
+(function (global) {
+  'use strict';
+  const VIP_LEVELS = [
+    [0, 'สมาชิกเริ่มต้น', 'STARTER', 'starter', 'linear-gradient(125deg,#303c44,#182129 70%,#394650)', '#f0f5f8', '#b3c0c9', '#bccbd7'],
+    [100, 'บรอนซ์ I', 'BRONZE I', 'bronze', 'linear-gradient(125deg,#b67c5a,#ebbd94 53%,#bc8662)', '#352016', '#654832', '#e5b28a'],
+    [150, 'บรอนซ์ II', 'BRONZE II', 'bronze', 'linear-gradient(125deg,#d2a17c,#f2d2ac 48%,#b77e55)', '#352016', '#68472f', '#f0c69e'],
+    [200, 'ซิลเวอร์ I', 'SILVER I', 'silver', 'linear-gradient(125deg,#99adb9,#e1eaf0 52%,#afbdc8)', '#1c303c', '#4c626f', '#c4d9e7'],
+    [250, 'ซิลเวอร์ II', 'SILVER II', 'silver', 'linear-gradient(125deg,#c3ced8,#f2f6f9 48%,#b3c6d2)', '#233744', '#526b7a', '#e2ecf4'],
+    [300, 'โกลด์ I', 'GOLD I', 'gold', 'linear-gradient(125deg,#d0ac61,#edcf89 52%,#b79247)', '#342913', '#64512e', '#e8c67e'],
+    [350, 'โกลด์ II', 'GOLD II', 'gold', 'linear-gradient(125deg,#dfbe7b,#f6e3af 48%,#c6a05b)', '#352b18', '#705831', '#f1d795'],
+    [400, 'แพลทินัม I', 'PLATINUM I', 'platinum', 'linear-gradient(125deg,#6b7d83,#c3d1cf 50%,#7c9497)', '#193434', '#3e5c60', '#b8d7d4'],
+    [500, 'แพลทินัม II', 'PLATINUM II', 'platinum', 'linear-gradient(125deg,#a7bebc,#e8f0ed 52%,#8daab2)', '#203c40', '#4e6b70', '#d6e8e7'],
+    [1000, 'ไดมอนด์', 'DIAMOND', 'diamond', 'linear-gradient(125deg,#d3ecf5,#fafcff 45%,#c6ddf5 73%,#c2f0ee)', '#15364e', '#4f6d82', '#caeaff'],
+    [2000, 'เอมเมอรัลด์', 'EMERALD', 'emerald', 'linear-gradient(125deg,#124b3d,#20725a 48%,#092d29)', '#e1fae9', '#a6d6bb', '#9ce6bd'],
+    [3000, 'แซฟไฟร์', 'SAPPHIRE', 'sapphire', 'linear-gradient(125deg,#142c64,#2b5394 48%,#0b1b3a)', '#edf5ff', '#b1c8ea', '#a9cdf8'],
+    [5000, 'วีไอพี', 'VIP', 'vip', 'linear-gradient(125deg,#38294c,#68517f 50%,#21192e)', '#fbf0ff', '#d2badf', '#dab8ee'],
+    [6000, 'รูบีวีไอพี', 'RUBY VIP', 'ruby', 'linear-gradient(125deg,#4b1d30,#82354e 50%,#2a1423)', '#fff1eb', '#e4b3bf', '#f0b2bc'],
+    [7000, 'เพรสทีจวีไอพี', 'PRESTIGE VIP', 'prestige', 'linear-gradient(125deg,#303226,#141a17 55%,#454334)', '#efe3c4', '#c3b99a', '#e4d19e'],
+    [8000, 'อิมพีเรียลวีไอพี', 'IMPERIAL VIP', 'imperial', 'linear-gradient(125deg,#2a254b,#504370 48%,#1a1832)', '#f4e8ca', '#c4b5cf', '#e9d5ae'],
+    [9000, 'คราวน์วีไอพี', 'CROWN VIP', 'crown', 'linear-gradient(125deg,#bca06a,#f6e6bd 48%,#ccb57e)', '#34291b', '#6a5737', '#f4dfaa'],
+    [10000, 'รอยัลวีไอพี', 'ROYAL VIP', 'royal', 'radial-gradient(ellipse at 18% 0%,#65466f 0%,transparent 63%),linear-gradient(125deg,#32203e,#16121f 58%,#34233e)', '#f5dfaa', '#cdb88f', '#f2d18b']
+  ].map((row, index) => Object.freeze({ minimumBaht:row[0], minimumSatang:row[0]*100, name:row[1], label:row[2], family:row[3], background:row[4], ink:row[5], muted:row[6], accent:row[7], index, level:index+1 }));
+  Object.freeze(VIP_LEVELS);
+
+  function resolve(balanceSatang) {
+    if (!Number.isSafeInteger(balanceSatang)) throw new TypeError('ยอดสำหรับคำนวณแรงค์ต้องเป็นจำนวนเต็มสตางค์');
+    let index = 0;
+    for (let i=1;i<VIP_LEVELS.length;i++) { if (balanceSatang>=VIP_LEVELS[i].minimumSatang) index=i; else break; }
+    const current=VIP_LEVELS[index],next=VIP_LEVELS[index+1]||null;
+    const remainingSatang=next?next.minimumSatang-balanceSatang:0;
+    const progress=next?Math.max(0,Math.min(100,(balanceSatang-current.minimumSatang)/(next.minimumSatang-current.minimumSatang)*100)):100;
+    return Object.freeze({current,next,balanceSatang,remainingSatang,progress,isMax:!next,unlockedCount:index+1});
+  }
+  function rankMembers(items,balanceFor) {
+    const codeCompare=(a,b)=>String(a)<String(b)?-1:String(a)>String(b)?1:0;
+    const rows=items.filter(m=>m.status!=='archived').map(member=>{
+      const amount=balanceFor(member.code);
+      return {member,balanceSatang:amount,tier:resolve(amount),position:0};
+    }).sort((a,b)=>b.balanceSatang-a.balanceSatang||codeCompare(a.member.code,b.member.code));
+    rows.forEach((row,index)=>{row.position=index&&rows[index-1].balanceSatang===row.balanceSatang?rows[index-1].position:index+1;});
+    return rows;
+  }
+  global.TaeVIP=Object.freeze({levels:VIP_LEVELS,resolve,rankMembers});
+})(typeof window!=='undefined'?window:globalThis);
+// VIP_MODEL_END
+
 /* TaeBank Mobile · UI has no direct permission to write a production database. */
 (() => {
   'use strict';
@@ -53,6 +101,11 @@
   let showBalance = true, modalCleanup = null, submitting = false, latestWarning = '';
   let loginRole = 'member';
   const app = $('#app'), modal = $('#modal');
+  const vipStyle=document.createElement('style');
+  vipStyle.id='taebank-vip-styles';
+  vipStyle.textContent="/* VIP layer: embedded in app.js so the upgrade needs only one replacement file. */\n.vip-account-card .balance-toggle,.vip-account-card .copy-account { color:var(--vip-muted); }\n.vip-member-levels { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:6px; }\n.vip-mini-badge svg { width:14px; height:14px; }\n.vip-mini-badge:has(svg)::before { display:none; }\n.vip-leader-meta { display:block; }\n.vip-leader-row { width:100%; border:0; background:transparent; color:inherit; text-align:left; cursor:pointer; }\n.vip-place[data-place='1'],.vip-place[data-place='2'],.vip-place[data-place='3'] { position:relative; }\n.vip-place[data-place='1']::after,.vip-place[data-place='2']::after,.vip-place[data-place='3']::after { content:attr(data-place); position:absolute; right:-5px; bottom:-4px; display:grid; place-items:center; min-width:17px; height:17px; border-radius:50%; border:1px solid currentColor; color:inherit; background:#20241f; font-size:12px; line-height:1; }\n.vip-max-message { display:flex; align-items:center; gap:10px; }\n.vip-max-message strong,.vip-max-message span { display:block; }\n.vip-max-message span { font-size:12px; }\n.vip-rank-panel > .vip-section-note { margin-top:12px; }\n.vip-progress-hidden .vip-progress-fill { opacity:.16; }\n.vip-account-card,.vip-rank-panel,.vip-ladder-row { --vip-accent:#e7c88a; --vip-edge:rgba(231,200,138,.24); --vip-glow:rgba(231,200,138,.09); }\n.balance-card.vip-account-card { color:var(--vip-ink,#29271f); border-color:var(--vip-edge,#e7c88a); background:var(--vip-bg,linear-gradient(120deg,#bdc7ba,#e1e7d9)); box-shadow:0 16px 46px rgba(0,0,0,.18),0 0 30px var(--vip-glow); }\n.vip-account-card .card-top,.vip-account-card .card-bottom { position:relative; z-index:1; }\n.vip-account-card .card-top { align-items:flex-start; }\n.vip-account-card .card-brand { padding-top:5px; }\n.vip-account-card .card-amount-label,.vip-account-card .account-number { color:var(--vip-muted,#4a5246); }\n.vip-account-card .card-amount-label .icon-btn { color:var(--vip-muted,#4a5246); }\n.vip-account-card .card-amount-label .icon-btn:hover { color:var(--vip-ink); background:rgba(128,128,128,.12); }\n.vip-account-card .card-chip { color:var(--vip-ink); border-color:currentColor; background:rgba(255,255,255,.14); opacity:.68; }\n.vip-account-card .card-decoration { border-color:currentColor; color:var(--vip-ink); opacity:.28; }\n.vip-card-badge { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:32px; max-width:57%; padding:6px 10px; border:1px solid currentColor; border-radius:7px; color:inherit; background:rgba(255,255,255,.07); font-size:12px; font-weight:800; line-height:1.5; letter-spacing:.01em; text-align:right; }\n.vip-card-badge svg { width:16px; height:16px; }\n.vip-account-card[data-vip-family=starter] .card-decoration { border-radius:36%; transform:rotate(25deg); }\n.vip-account-card[data-vip-family=bronze] .card-decoration,.vip-account-card[data-vip-family=silver] .card-decoration { border-style:double; border-width:3px; }\n.vip-account-card[data-vip-family=platinum] .card-decoration,.vip-account-card[data-vip-family=diamond] .card-decoration { border-radius:28px; transform:rotate(45deg); }\n.vip-account-card[data-vip-family=emerald] .card-decoration,.vip-account-card[data-vip-family=sapphire] .card-decoration { border-radius:35%; transform:rotate(34deg); }\n.vip-account-card[data-vip-family=vip] .vip-card-badge,.vip-account-card[data-vip-family=prestige] .vip-card-badge { border-radius:3px 12px 3px 12px; }\n.vip-account-card[data-vip-family=ruby] .card-decoration { border-radius:24%; transform:rotate(45deg); }\n.vip-account-card[data-vip-family=imperial] .vip-card-badge,.vip-account-card[data-vip-family=crown] .vip-card-badge { box-shadow:inset 0 0 0 2px rgba(255,255,255,.1); }\n.balance-card.vip-account-card[data-vip-family=royal] { border:1px solid #c4a565; box-shadow:0 18px 50px rgba(3,0,13,.34),0 0 28px rgba(173,129,220,.08),inset 0 0 0 5px #171125,inset 0 0 0 6px rgba(229,192,122,.31); }\n.vip-account-card[data-vip-family=royal]::after { content:''; position:absolute; z-index:-1; inset:0; pointer-events:none; background:radial-gradient(ellipse at 4% 0%,rgba(216,176,255,.15),transparent 55%),linear-gradient(110deg,transparent 28%,rgba(242,219,173,.08) 47%,transparent 65%); }\n.vip-account-card[data-vip-family=royal] .card-decoration { width:240px; height:240px; top:6px; right:-110px; color:#e5c07a; opacity:.4; border-radius:30%; transform:rotate(45deg); box-shadow:0 0 0 20px rgba(229,192,122,.04),0 0 0 21px rgba(229,192,122,.14),0 0 0 43px rgba(229,192,122,.03),0 0 0 44px rgba(229,192,122,.1); }\n.vip-account-card[data-vip-family=royal] .vip-card-badge { color:#f8dda1; border-color:rgba(239,204,141,.6); background:linear-gradient(120deg,rgba(222,177,85,.15),rgba(42,27,62,.4)); text-shadow:0 1px 12px rgba(243,207,130,.2); }\n.vip-rank-panel { position:relative; overflow:hidden; min-width:0; padding:22px; border:1px solid var(--vip-edge); border-radius:22px; background:radial-gradient(ellipse at 0 0,var(--vip-glow),transparent 75%),#191c19; }\n.vip-rank-panel::before { content:''; position:absolute; inset:0 auto 0 0; width:3px; background:var(--vip-accent); opacity:.7; }\n.vip-panel-top { display:flex; align-items:center; flex-wrap:wrap; gap:13px; }\n.vip-rank-emblem,.vip-ladder-emblem { display:grid; place-items:center; flex-shrink:0; width:54px; height:58px; border:1px solid var(--vip-edge); border-radius:15px 15px 22px 22px; color:var(--vip-accent); background:linear-gradient(145deg,var(--vip-glow),rgba(0,0,0,.1)); box-shadow:inset 0 1px 0 rgba(255,255,255,.06); }\n.vip-rank-emblem svg { width:31px; height:31px; stroke-width:1.45; }\n.vip-panel-copy { min-width:0; flex:1; }\n.vip-kicker { color:#a3aa9d; font-size:12px; font-weight:600; letter-spacing:.08em; }\n.vip-current-name { color:var(--vip-accent); font-size:21px; font-weight:800; line-height:1.6; letter-spacing:-.025em; overflow-wrap:anywhere; }\n.vip-level-code { color:#a3aa9d; font-size:12px; line-height:1.5; letter-spacing:.07em; }\n.vip-explore { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; gap:4px; min-height:44px; padding:9px 12px; border:1px solid var(--vip-edge); border-radius:11px; color:var(--vip-accent); background:rgba(255,255,255,.025); font-size:12px; font-weight:700; line-height:1.5; transition:background .16s,border-color .16s; }\n.vip-explore:hover { background:var(--vip-glow); }\n.vip-explore svg { width:15px; height:15px; }\n.vip-next-line { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 14px; margin-top:23px; color:#a3aa9d; font-size:12px; line-height:1.7; }\n.vip-next-line strong { color:var(--paper); font-size:13px; font-weight:650; }\n.vip-remaining { margin-top:7px; color:#b6bdb1; font-size:13px; line-height:1.8; }\n.vip-remaining strong { margin:0 4px; color:var(--vip-accent); font-size:27px; line-height:1.5; letter-spacing:-.045em; font-variant-numeric:tabular-nums; }\n.vip-progress-track { height:8px; overflow:hidden; margin-top:15px; border:1px solid rgba(255,255,255,.06); border-radius:10px; background:#2c302a; }\n.vip-progress-fill { display:block; height:100%; max-width:100%; border-radius:inherit; background:linear-gradient(90deg,var(--vip-accent),#fff0ca); box-shadow:0 0 14px var(--vip-glow); transition:width .35s ease; }\n.vip-progress-meta { display:flex; justify-content:space-between; gap:10px; margin-top:8px; color:#a3aa9d; font-size:12px; line-height:1.6; font-variant-numeric:tabular-nums; }\n.vip-max-message { margin-top:18px; padding:13px 15px; border:1px solid var(--vip-edge); border-radius:12px; color:var(--vip-accent); background:var(--vip-glow); font-size:13px; line-height:1.9; }\n.vip-rank-panel[data-vip-max=true] { border-color:rgba(229,192,122,.4); background:radial-gradient(ellipse at top left,rgba(138,91,183,.15),transparent 80%),#1c1826; }\n.vip-rank-panel[data-vip-max=true] .vip-rank-emblem { border-radius:12px; transform:rotate(-3deg); box-shadow:inset 0 0 0 3px #211b2c,0 0 22px rgba(229,192,122,.08); }\n.vip-mini-badge { display:inline-flex; align-items:center; gap:5px; max-width:100%; padding:3px 7px; border:1px solid var(--vip-edge,rgba(231,200,138,.24)); border-radius:6px; color:var(--vip-accent,#e7c88a); background:var(--vip-glow,rgba(231,200,138,.06)); font-size:12px; font-weight:650; line-height:1.5; white-space:normal; vertical-align:middle; }\n.vip-mini-badge::before { content:''; width:5px; height:5px; flex-shrink:0; border-radius:50%; background:currentColor; }\n.vip-position-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 7px; border:1px solid rgba(228,234,220,.12); border-radius:6px; color:#bac3b2; background:rgba(255,255,255,.03); font-size:12px; font-weight:650; line-height:1.5; }\n.member-name .vip-mini-badge { margin:4px 0 0; }\n.vip-leaderboard-list { padding:0 20px 10px; }\n.vip-leader-row { display:flex; align-items:center; gap:12px; padding:16px 0; border-bottom:1px solid var(--line); }\n.vip-leader-row:last-child { border-bottom:0; }\n.vip-place { display:grid; place-items:center; flex-shrink:0; width:34px; min-height:38px; border:1px solid #394032; border-radius:10px; color:#9da793; background:#24291f; font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; }\n.vip-place[data-place='1'] { color:#ffdfa1; border-color:#6c5a35; background:linear-gradient(135deg,#443a24,#29271f); }\n.vip-place[data-place='2'] { color:#e0e6ec; border-color:#525e68; background:linear-gradient(135deg,#333d45,#252b30); }\n.vip-place[data-place='3'] { color:#edbda0; border-color:#654c3e; background:linear-gradient(135deg,#443329,#2f2722); }\n.vip-leader-person { min-width:0; flex:1; }\n.vip-leader-name { display:flex; flex-wrap:wrap; align-items:center; gap:5px; color:#f6f3ea; font-size:14px; font-weight:650; line-height:1.7; overflow-wrap:anywhere; }\n.vip-leader-meta { margin-top:4px; color:#a3aa9d; font-size:12px; line-height:1.6; }\n.vip-leader-value { flex-shrink:0; margin-left:auto; color:#f1e9db; font-size:15px; font-weight:750; line-height:1.6; text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; letter-spacing:-.02em; }\n.vip-leader-value small { display:block; color:#a3aa9d; font-size:12px; font-weight:500; }\n.vip-leader-row.is-self { position:relative; }\n.vip-leader-row.is-self::before { content:''; position:absolute; inset:5px -10px; z-index:0; border:1px solid rgba(231,200,138,.12); border-radius:12px; background:rgba(231,200,138,.035); pointer-events:none; }\n.vip-leader-row.is-self > * { position:relative; }\n.vip-modal-intro { color:#adb4a6; font-size:13px; line-height:1.9; }\n.vip-ladder-summary { display:flex; align-items:center; flex-wrap:wrap; gap:8px 12px; padding:15px; border:1px solid var(--vip-edge,rgba(231,200,138,.2)); border-radius:15px; background:var(--vip-glow,rgba(231,200,138,.05)); color:#e7c88a; font-size:13px; line-height:1.8; }\n.vip-ladder-summary strong { color:var(--paper); font-size:15px; }\n.vip-ladder-summary .vip-mini-badge { margin-left:auto; }\n.vip-ladder-list { display:flex; flex-direction:column; gap:9px; }\n.vip-ladder-row { position:relative; display:flex; align-items:center; gap:12px; min-width:0; padding:14px; border:1px solid rgba(228,234,220,.09); border-radius:15px; background:#181c17; }\n.vip-ladder-emblem { width:43px; height:47px; border-radius:12px 12px 17px 17px; }\n.vip-ladder-emblem svg { width:25px; height:25px; stroke-width:1.5; }\n.vip-ladder-copy { flex:1; min-width:0; }\n.vip-ladder-title { color:var(--vip-accent); font-size:14px; font-weight:750; line-height:1.65; overflow-wrap:anywhere; }\n.vip-ladder-threshold { color:#f6f3ea; font-size:12px; line-height:1.75; font-variant-numeric:tabular-nums; }\n.vip-ladder-note { color:#a3aa9d; font-size:12px; line-height:1.65; }\n.vip-ladder-status { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; gap:4px; max-width:88px; padding:5px 7px; border-radius:6px; color:#a3aa9d; font-size:12px; line-height:1.5; text-align:center; }\n.vip-ladder-status svg { width:14px; height:14px; }\n.vip-ladder-row[data-state=current] { border-color:var(--vip-accent); background:linear-gradient(110deg,var(--vip-glow),transparent 90%),#1c201a; box-shadow:0 0 0 1px var(--vip-edge); }\n.vip-ladder-row[data-state=current] .vip-ladder-status { color:var(--vip-accent); background:var(--vip-glow); }\n.vip-ladder-row[data-state=unlocked] .vip-ladder-status { color:#a8ccae; }\n.vip-ladder-row[data-state=locked] .vip-ladder-emblem { opacity:.64; }\n.vip-ladder-row[data-vip-family=royal] { border-color:rgba(229,192,122,.3); background:radial-gradient(ellipse at left,rgba(138,91,183,.13),transparent 80%),#1d1729; }\n.vip-ladder-row[data-vip-family=royal][data-state=current] { border-color:#e5c07a; box-shadow:inset 0 0 0 3px #1d1729,inset 0 0 0 4px rgba(229,192,122,.2); }\n.vip-ladder-row[data-vip-family=diamond] .vip-ladder-emblem,.vip-ladder-row[data-vip-family=ruby] .vip-ladder-emblem { border-radius:10px; }\n.vip-family-mark { color:var(--vip-accent); font-size:12px; font-weight:700; letter-spacing:.08em; }\n.vip-section-note { margin:0; color:#a3aa9d; font-size:12px; line-height:1.9; }\n.vip-leaderboard-list + .vip-section-note { padding:0 20px 19px; }\n@media(max-width:600px) {\n  .vip-rank-panel { padding:20px; border-radius:20px; }\n  .vip-panel-top { gap:11px; }\n  .vip-rank-emblem { width:48px; height:53px; }\n  .vip-rank-emblem svg { width:27px; height:27px; }\n  .vip-current-name { font-size:20px; }\n  .vip-explore { padding:8px 10px; }\n  .vip-next-line { margin-top:19px; }\n  .vip-remaining strong { font-size:25px; }\n  .vip-card-badge { padding:6px 8px; gap:4px; }\n  .vip-leaderboard-list { padding-left:18px; padding-right:18px; }\n  .vip-leader-row { gap:10px; }\n  .vip-leader-value { font-size:14px; }\n  .vip-ladder-row { gap:10px; padding:12px; }\n  .vip-ladder-emblem { width:38px; height:43px; }\n  .vip-ladder-status { max-width:70px; padding:4px; }\n}\n@media(max-width:374px) {\n  .vip-rank-panel { padding:18px; }\n  .vip-panel-copy { flex:1; flex-basis:0; min-width:0; }\n  .vip-rank-emblem { width:42px; height:48px; }\n  .vip-panel-top { gap:9px; }\n  .vip-current-name { font-size:18px; }\n  .vip-explore { width:auto; margin-top:0; padding:7px 8px; }\n  .vip-card-badge { max-width:55%; padding:5px 6px; }\n  .vip-card-badge svg { width:14px; height:14px; }\n  .vip-leader-row { gap:8px; }\n  .vip-place { width:29px; }\n  .vip-leader-name { font-size:13px; }\n  .vip-leader-value { font-size:13px; }\n  .vip-ladder-row { gap:9px; padding:11px; }\n  .vip-ladder-title { font-size:13px; }\n  .vip-ladder-emblem { width:34px; height:39px; }\n  .vip-ladder-status { max-width:62px; }\n}\n@media(prefers-reduced-motion:reduce) { .vip-progress-fill,.vip-explore { transition:none; } }\n";
+  if(!document.getElementById(vipStyle.id))document.head.appendChild(vipStyle);
+
   const session = () => snapshot.session;
   const isAdmin = () => session()?.role === 'admin';
   const allMembers = () => Object.values(snapshot.state?.members || {});
@@ -66,6 +119,89 @@
   const accountFmt = code => String(code || '').replace(/^(\d{3})(\d{3})$/, '$1 $2');
   const requestKey = prefix => `${prefix}-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
   const nowMonth = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit'}).format(new Date());
+
+  // VIP_UI_BEGIN — CSS and rank UI are bundled here so only app.js needs replacing.
+  const vip = window.TaeVIP;
+  const vipIcon = (family, classes = '') => {
+    const paths = family==='royal'||family==='crown'||family==='imperial' ? '<path d="m3 7 4 4 5-7 5 7 4-4-2 12H5z"/><path d="M7 16h10"/><circle cx="12" cy="12" r="1"/>' : family==='diamond'||family==='emerald'||family==='sapphire'||family==='ruby' ? '<path d="m7 3-5 6 10 12L22 9l-5-6zM2 9h20M7 3l5 18 5-18M7 3l5 6 5-6"/>' : family==='vip'||family==='prestige' ? '<path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>' : '<path d="m12 2 8 5v10l-8 5-8-5V7z"/><path d="m8 12 3 3 5-6"/>';
+    return `<svg class="icon ${classes}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+  };
+  const vipTheme = tier => `--vip-bg:${tier.background};--vip-ink:${tier.ink};--vip-muted:${tier.muted};--vip-accent:${tier.accent};--vip-edge:${tier.accent}44;--vip-glow:${tier.accent}16;`;
+  const vipNumber = satang => fmt(satang);
+  const vipVisible = () => isAdmin() || showBalance;
+  const vipRanking = () => vip.rankMembers(allMembers(),balance);
+  function vipBadge(tier) { return `<span class="vip-mini-badge" style="${vipTheme(tier)}">${vipIcon(tier.family)}${esc(tier.name)}</span>`; }
+  function vipPanel(code) {
+    const m=snapshot.state?.members?.[code]; if(!m)return '';
+    const info=vip.resolve(balance(code)),tier=info.current,visible=vipVisible();
+    const progressDisplay=info.progress>0&&info.progress<100?Math.min(99.9,info.progress).toFixed(1):String(info.progress);
+    const progress=visible?`<div class="vip-progress-track" role="progressbar" aria-label="ความคืบหน้าสู่ ${esc(info.next?.name||'ขั้นสูงสุด')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Number(info.progress.toFixed(4)))}"><span class="vip-progress-fill" style="width:${info.progress}%"></span></div>`:`<div class="vip-progress-track vip-progress-hidden" aria-label="ซ่อนความคืบหน้าตามการซ่อนยอดเงิน"><span class="vip-progress-fill" style="width:100%"></span></div>`;
+    return `<section class="vip-rank-panel" style="${vipTheme(tier)}" data-vip-family="${tier.family}" data-vip-max="${info.isMax}" data-vip-panel="${esc(code)}"><div class="vip-panel-top"><div class="vip-rank-emblem">${vipIcon(tier.family)}</div><div class="vip-panel-copy"><p class="vip-kicker">${tier.label}</p><h2 class="vip-current-name">${esc(tier.name)}</h2><span class="vip-level-code">LEVEL ${String(tier.level).padStart(2,'0')} / ${vip.levels.length}</span></div><button class="text-btn vip-explore" data-action="vip-ladder" data-code="${esc(code)}">ดูทุกขั้น ${icon('chevron')}</button></div>${info.isMax?`<div class="vip-max-message">${vipIcon('royal')}<div><strong>คุณอยู่ในระดับสูงสุดแล้ว</strong><span>รอยัลวีไอพี · ยอดเงินตั้งแต่ 10,000 บาท</span></div></div>${progress}<div class="vip-progress-meta"><span>ROYAL COLLECTION</span><span>ระดับสูงสุด</span></div>`:`<div class="vip-next-line"><span>ขั้นถัดไป</span><strong>${esc(info.next.name)}</strong></div><p class="vip-remaining">ออมเพิ่มอีก <strong>${visible?`฿${vipNumber(info.remainingSatang)}`:'฿•••,•••'}</strong></p>${progress}<div class="vip-progress-meta"><span>฿${vipNumber(tier.minimumSatang)} → ฿${vipNumber(info.next.minimumSatang)}</span><span>${visible?`${progressDisplay}%`:'ซ่อนความคืบหน้า'}</span></div>`}<p class="vip-section-note">แรงค์ปรับตามยอดเงินคงเหลือปัจจุบัน</p></section>`;
+  }
+  function vipLeaderboard() {
+    if(!isAdmin())return '';
+    const rows=vipRanking();
+    return `<section class="section-card vip-leaderboard"><div class="section-heading"><div><p class="eyebrow">THE HONOUR ROLL</p><h2 class="section-title">อันดับสมาชิก</h2></div><button class="text-btn" data-action="nav" data-view="members">ดูทั้งหมด ${icon('arrow')}</button></div><div class="vip-leaderboard-list">${rows.slice(0,5).map(r=>`<button class="vip-leader-row" data-action="member-detail" data-code="${esc(r.member.code)}"><span class="vip-place" data-place="${r.position}">${r.position<=3?vipIcon(r.position===1?'royal':r.position===2?'diamond':'starter'):r.position}<span class="sr-only">อันดับ ${r.position}</span></span><span class="vip-leader-person"><span class="vip-leader-name">${esc(r.member.nick||r.member.name)}</span><span class="vip-leader-meta">${vipBadge(r.tier.current)}</span></span><span class="vip-leader-value">฿${fmt(r.balanceSatang)}<small>${esc(accountFmt(r.member.code))}</small></span></button>`).join('')||'<div class="empty-state">ยังไม่มีสมาชิกที่ใช้งาน</div>'}</div><p class="vip-section-note">เรียงตามยอดคงเหลือ · ยอดเท่ากันได้อันดับร่วม</p></section>`;
+  }
+  function openVIPLadder(code) {
+    if(code&&!isAdmin()&&code!==session()?.accountCode)return;
+    const m=snapshot.state?.members?.[code];
+    const info=m?vip.resolve(balance(code)):null;
+    const tier=info?.current||vip.levels[vip.levels.length-1];
+    const introduction=info?(info.isMax?'คุณอยู่ในขั้นสูงสุดของ TaeBank แล้ว':`จาก ${info.current.name} สู่ ${info.next.name}${vipVisible()?` · อีก ฿${fmt(info.remainingSatang)}`:''}`):'ทุกก้าวของการออม มีระดับที่สะท้อนตัวคุณ';
+    openModal('เส้นทางแรงค์และวีไอพี',`<div class="vip-ladder-summary" style="${vipTheme(tier)}">${vipIcon(tier.family)}<div><p class="vip-kicker">THE PRIVATE COLLECTION</p><strong>${info?esc(tier.name):'18 ระดับสู่รอยัลวีไอพี'}</strong></div></div><p class="vip-modal-intro">${esc(introduction)}</p><div class="vip-ladder-list">${vip.levels.map(level=>{
+      const state=info?(level.index===info.current.index?'current':level.index<info.current.index?'unlocked':'locked'):'locked';
+      const next=vip.levels[level.index+1];
+      const gap=next?next.minimumSatang-level.minimumSatang:0;
+      return `<div class="vip-ladder-row" style="${vipTheme(level)}" data-state="${state}" data-vip-family="${level.family}" ${state==='current'?'aria-current="step"':''}><span class="vip-ladder-emblem">${vipIcon(level.family)}</span><div class="vip-ladder-copy"><p class="vip-ladder-title">${esc(level.name)}</p><p class="vip-ladder-threshold">ยอดเงินตั้งแต่ ฿${fmt(level.minimumSatang)}</p><p class="vip-ladder-note">${next?`ช่วงนี้ห่างขั้นถัดไป ฿${fmt(gap)}`:'ระดับสูงสุด · ROYAL VIP'}</p></div><span class="vip-ladder-status">${state==='current'?'คุณอยู่ที่นี่':state==='unlocked'?icon('check'):`${String(level.level).padStart(2,'0')}`}</span></div>`;
+    }).join('')}</div><p class="vip-section-note">คำนวณจากยอดคงเหลือ ไม่ใช่ยอดฝากสะสม เมื่อยอดเปลี่ยน แรงค์จะปรับขึ้นหรือลงตามเกณฑ์</p>`);
+  }
+  function decorateVIPDialog() {
+    if(!modal.open||!snapshot.state)return;
+    const profile=$('.compact-profile',modal),code=$('[data-action="member-edit"][data-code]',modal)?.dataset.code;
+    if(!profile||!code||!snapshot.state.members[code])return;
+    const tier=vip.resolve(balance(code)).current;
+    const oldBadge=$('.vip-mini-badge',profile);
+    if(oldBadge)oldBadge.outerHTML=vipBadge(tier);
+    else profile.insertAdjacentHTML('beforeend',vipBadge(tier));
+    const oldPanel=$('[data-vip-panel]',modal);
+    if(oldPanel)oldPanel.outerHTML=vipPanel(code);
+    else profile.insertAdjacentHTML('afterend',vipPanel(code));
+  }
+  function decorateVIP() {
+    if(!session()||!snapshot.state)return;
+    if(snapshot.mode!=='demo'&&snapshot.dataReady===false)return;
+    if(!isAdmin()) {
+      const m=ownMember();if(!m)return;
+      const tier=vip.resolve(balance(m.code)).current;
+      const card=$('#view .balance-card');
+      if(card) {
+        card.classList.add('vip-account-card');card.dataset.vipFamily=tier.family;card.style.cssText=vipTheme(tier);
+        const badge=$('.card-badge',card);if(badge){badge.className='vip-card-badge';badge.innerHTML=`${vipIcon(tier.family)}<span>${esc(tier.name)}</span>`;}
+        const caption=$('.balance-caption');if(caption&&!$('[data-vip-panel]',app))caption.insertAdjacentHTML('afterend',vipPanel(m.code));
+      }
+      const profile=$('#view .profile-hero');
+      if(profile) {
+        const badge=$('.badge',profile);if(badge&&m.status!=='archived')badge.outerHTML=vipBadge(tier);
+        else if(!$('.vip-mini-badge',profile))profile.insertAdjacentHTML('beforeend',vipBadge(tier));
+        const side=$('#view .side-column');if(side&&!$('[data-vip-panel]',side))side.insertAdjacentHTML('afterbegin',vipPanel(m.code));
+      }
+    }
+    if(isAdmin()) {
+      const positions=new Map(vipRanking().map(row=>[row.member.code,row.position]));
+      app.querySelectorAll('.member-row').forEach(row=>{
+        const code=$('[data-code]',row)?.dataset.code; if(!code||!snapshot.state.members[code])return;
+        const m=snapshot.state.members[code],tier=vip.resolve(balance(code)).current;
+        const main=$('.member-main',row);if(main&&!$('.vip-member-levels',main))main.insertAdjacentHTML('beforeend',`<div class="vip-member-levels">${positions.has(code)?`<span class="vip-position-badge" aria-label="อันดับ ${positions.get(code)}">#${positions.get(code)}</span>`:''}${vipBadge(tier)}</div>`);
+      });
+      if(activeView==='home') {
+        const list=$('#view .main-column .member-list');
+        if(list)list.closest('.section-card').outerHTML=vipLeaderboard();
+      }
+    }
+    decorateVIPDialog();
+  }
+  // VIP_UI_END
 
   function toast(message, type = 'success') {
     const el = document.createElement('div'); el.className = `toast ${type}`;
@@ -94,6 +230,7 @@
       <div class="app-main"><header class="topbar"><a class="brand-lockup" href="#" data-action="nav" data-view="home" aria-label="TaeBank หน้าหลัก">${brand()}</a><span class="desktop-only eyebrow">${admin ? 'TAEBANK / ADMIN WORKSPACE' : 'TAEBANK / PERSONAL ACCOUNT'}</span><div class="topbar-actions"><span class="inline-status ${snapshot.connection === 'offline' ? 'offline' : ''}"><i></i><span>${snapshot.mode === 'demo' ? 'DEMO' : snapshot.connection === 'offline' ? 'ออฟไลน์' : snapshot.connection === 'loading' ? 'กำลังเชื่อมต่อ' : 'เชื่อมต่อแล้ว'}</span></span><button class="avatar" data-action="${admin ? 'about' : 'nav'}" ${admin ? '' : 'data-view="profile"'} aria-label="${admin ? 'ข้อมูลผู้ดูแลระบบ' : 'ข้อมูลบัญชี'}">${admin ? 'AD' : esc((ownMember()?.nick || 'T').slice(0,2))}</button></div></header>
       <main id="view" tabindex="-1">${renderView()}</main><footer class="app-footer">TaeBank <span>PRIVATE ACCOUNT · MADE FOR YOU</span></footer></div>
       <nav class="bottom-nav" aria-label="เมนูหลักบนมือถือ">${navMarkup()}</nav></div>`;
+    decorateVIP();
   }
   function renderLogin() {
     const demo = snapshot.mode === 'demo', legacy = snapshot.mode === 'legacy';
@@ -162,7 +299,7 @@
   function membersView() {
     return `${demoBanner()}${heading('YOUR COMMUNITY','สมาชิกทั้งหมด',`<button class="button button-primary button-small" data-action="member-add">${icon('plus')} เพิ่มสมาชิก</button>`)}<div class="toolbar"><div class="search-field">${icon('search')}<label class="sr-only" for="member-search">ค้นหาสมาชิก</label><input id="member-search" placeholder="ค้นหาชื่อ หรือเลขบัญชี" value="${esc(memberSearch)}" type="search" autocomplete="off"></div><span id="member-count" class="badge badge-muted">${members().length} บัญชีที่ใช้งาน</span></div><section class="section-card"><div class="section-heading"><h2 class="section-title">บัญชีสมาชิก</h2><span class="form-note">ยอดเงิน · บาท</span></div><div id="member-results" class="member-list">${memberRows(filteredMembers())}</div></section>`;
   }
-  function filteredMembers() { const q = memberSearch.trim().toLocaleLowerCase(); return allMembers().filter(m=>[m.code,m.nick,m.name].some(s=>String(s||'').toLocaleLowerCase().includes(q))).sort((a,b)=>(a.status==='archived')-(b.status==='archived') || a.code.localeCompare(b.code)); }
+  function filteredMembers() { const q = memberSearch.trim().toLocaleLowerCase(); return allMembers().filter(m=>[m.code,m.nick,m.name].some(s=>String(s||'').toLocaleLowerCase().includes(q))).sort((a,b)=>(a.status==='archived')-(b.status==='archived') || balance(b.code)-balance(a.code) || a.code.localeCompare(b.code)); }
   function historyView() {
     return `${demoBanner()}${heading('EVERY MOVE MATTERS','รายการเคลื่อนไหว',`<button class="button button-secondary button-small" data-action="statement" ${!isAdmin()?`data-code="${esc(session().accountCode)}"`:''}>${icon('download')} ใบแจ้งยอด</button>`)}<div class="toolbar"><div class="search-field">${icon('search')}<label class="sr-only" for="history-search">ค้นหารายการ</label><input id="history-search" type="search" placeholder="${isAdmin()?'ค้นหาชื่อ เลขบัญชี หรือบันทึก':'ค้นหาประเภทรายการหรือบันทึก'}" value="${esc(historySearch)}"></div></div><div class="history-controls"><div class="filter-chips" aria-label="ประเภทของรายการ">${[['all','ทั้งหมด'],['deposit','ฝากเข้า'],['withdraw','ถอนออก'],['interest','ดอกเบี้ย']].map(([v,title])=>`<button class="chip ${historyFilter===v?'active':''}" data-action="filter" data-filter="${v}" aria-pressed="${historyFilter===v}">${title}</button>`).join('')}</div><div class="field history-date"><label for="history-period" class="sr-only">ช่วงเวลา</label><select id="history-period"><option value="all">ทุกช่วงเวลา</option><option value="7">7 วันที่ผ่านมา</option><option value="30">30 วันที่ผ่านมา</option><option value="90">90 วันที่ผ่านมา</option></select></div></div><section class="section-card"><div class="section-heading"><h2 class="section-title">ประวัติทั้งหมด</h2><span id="history-count" class="badge badge-muted"></span></div><div id="history-results" class="transaction-list"></div></section>`;
   }
@@ -199,6 +336,7 @@
     modal.innerHTML = `<div class="modal-header"><div><p class="eyebrow">TAEBANK / ${snapshot.mode === 'demo' ? 'DEMO SPACE' : 'PRIVATE SPACE'}</p><h2 class="modal-title" id="modal-title">${title}</h2></div><button class="icon-btn modal-close" data-action="modal-close" aria-label="ปิดหน้าต่าง">${icon('close')}</button></div><div class="modal-body">${body}<p id="modal-error" class="form-error" role="alert"></p></div>${footer ? `<div class="modal-footer">${footer}</div>` : ''}`;
     modal.showModal(); document.body.classList.add('modal-open');
     if (onReady) onReady(modal);
+    decorateVIPDialog();
   }
   function closeModal() { if (submitting) return; if (modalCleanup) { modalCleanup(); modalCleanup = null; } modal.close(); document.body.classList.remove('modal-open'); }
   function modalError(error) { const el = $('#modal-error'); if (el) el.textContent = friendly(error); else toast(friendly(error),'error'); }
@@ -334,6 +472,7 @@
     const action=b.dataset.action,code=b.dataset.code;
     try{
       if(action==='nav'){closeModal();setView(b.dataset.view);refreshHistory();}
+      else if(action==='vip-ladder')openVIPLadder(code||session()?.accountCode);
       else if(action==='login-role'){loginRole=b.dataset.role;renderLogin();}
       else if(action==='demo-member'||action==='demo-admin'){b.disabled=true;await window.TaeService.signIn({demoRole:action==='demo-admin'?'admin':'member'});setView('home');}
       else if(action==='logout'){closeModal();activeView='home';await window.TaeService.signOut();toast('ออกจากระบบแล้ว');}
@@ -361,7 +500,7 @@
     }catch(error){toast(friendly(error),'error');b.disabled=false;}
   });
   document.addEventListener('input',e=>{
-    if(e.target.id==='member-search'){memberSearch=e.target.value;$('#member-results').innerHTML=memberRows(filteredMembers());$('#member-count').textContent=`พบ ${filteredMembers().length} บัญชี`;}
+    if(e.target.id==='member-search'){memberSearch=e.target.value;$('#member-results').innerHTML=memberRows(filteredMembers());$('#member-count').textContent=`พบ ${filteredMembers().length} บัญชี`;decorateVIP();}
     if(e.target.id==='history-search'){historySearch=e.target.value;refreshHistory();}
   });
   document.addEventListener('change',e=>{if(e.target.id==='history-period')refreshHistory();});
