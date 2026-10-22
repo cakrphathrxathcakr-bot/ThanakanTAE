@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101211">
+  <meta name="description" content="TaeBank — ดูแลทุกยอดเงินให้ชัดเจน บัญชีส่วนตัวและระบบจัดการสมาชิกที่ออกแบบเพื่อมือถือ">
+  <title>TaeBank — ทุกยอดเงิน ชัดเจนกว่าเดิม</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23101211'/%3E%3Cpath d='M18 22h28M32 22v24M22 30h20' fill='none' stroke='%23e7c88a' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  color-scheme: dark;
+  --bg: #101211;
+  --panel: #191c19;
+  --panel-raised: #20241f;
+  --panel-hover: #272c25;
+  --paper: #f6f3ea;
+  --muted: #92988e;
+  --faint: #7f8b78;
+  --line: rgba(228, 234, 220, .105);
+  --gold: #e7c88a;
+  --gold-bright: #f0d8a8;
+  --gold-dim: rgba(231, 200, 138, .1);
+  --green: #91c8a8;
+  --red: #ee9a91;
+  --radius: 22px;
+  --font: 'Manrope', 'Noto Sans Thai', sans-serif;
+  font-family: var(--font);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; background: var(--bg); scroll-behavior: smooth; }
+body { margin: 0; color: var(--paper); background: var(--bg); font-size: 15px; line-height: 1.65; }
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+button, a, input, select, textarea { touch-action: manipulation; }
+button { color: inherit; }
+button:disabled { cursor: not-allowed; opacity: .46; }
+input, select, textarea { min-width: 0; }
+a { color: var(--gold); text-decoration: none; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--gold); outline-offset: 4px;
+}
+svg { width: 22px; height: 22px; flex-shrink: 0; vertical-align: middle; }
+img { max-width: 100%; }
+h1, h2, h3, p { margin: 0; }
+strong { font-weight: 750; }
+::selection { color: #181b16; background: var(--gold); }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.mobile-only { display: none; }
+
+/* A compact, quiet frame puts the account itself in the foreground. */
+.app-shell { min-height: 100dvh; padding-left: 228px; }
+.desktop-sidebar { position: fixed; inset: 0 auto 0 0; z-index: 20; width: 228px; display: flex; flex-direction: column; padding: 34px 22px 24px; border-right: 1px solid var(--line); background: #121512; }
+.desktop-sidebar .brand-lockup { margin: 0 12px 54px; }
+.desktop-sidebar nav { display: flex; flex-direction: column; gap: 8px; }
+.desktop-sidebar .nav-item { display: flex; align-items: center; gap: 13px; min-height: 52px; border: 1px solid transparent; border-radius: 12px; padding: 12px 16px; color: var(--muted); background: transparent; font-weight: 650; text-align: left; }
+.desktop-sidebar .nav-item.active { color: var(--gold); background: var(--gold-dim); border-color: rgba(231, 200, 138, .1); }
+.desktop-sidebar .nav-item:hover { color: var(--paper); background: var(--panel); }
+.desktop-sidebar .nav-item.active:hover { color: var(--gold); background: var(--gold-dim); }
+.desktop-sidebar .sidebar-bottom { margin-top: auto; padding: 24px 12px 0; border-top: 1px solid var(--line); }
+.desktop-sidebar .sidebar-label { color: var(--faint); font-size: 12px; letter-spacing: .1em; }
+.desktop-sidebar .sidebar-note { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.75; }
+.app-main { max-width: 1304px; margin: 0 auto; padding: 0 44px 42px; }
+.topbar { height: 102px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+.topbar > .brand-lockup { display: none; }
+.brand-lockup { display: inline-flex; align-items: center; gap: 11px; white-space: nowrap; }
+.brand-mark { width: 36px; height: 36px; display: grid; place-items: center; color: var(--gold); }
+.brand-mark svg { width: 36px; height: 36px; }
+.brand-word { font-size: 23px; font-weight: 800; line-height: 1; letter-spacing: -.055em; color: var(--paper); }
+.brand-word span { font-weight: 400; color: var(--gold); }
+.eyebrow { color: var(--muted); font-size: 12px; font-weight: 650; line-height: 1.5; letter-spacing: .14em; text-transform: uppercase; }
+.topbar > .eyebrow { color: var(--faint); letter-spacing: .11em; }
+.topbar-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.icon-btn { width: 44px; height: 44px; display: inline-grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--muted); }
+.icon-btn:hover { background: var(--panel); color: var(--paper); }
+.icon-btn svg { width: 19px; height: 19px; }
+.avatar { display: inline-grid; place-items: center; flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%; border: 1px solid #495040; background: #2e382b; color: #d6e1cc; font-size: 14px; font-weight: 750; }
+.bottom-nav { display: none; }
+.demo-banner { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 39px; padding: 9px 18px; color: #d6c69f; border-bottom: 1px solid rgba(231, 200, 138, .11); background: #27271d; font-size: 12px; line-height: 1.6; text-align: center; }
+.demo-banner svg { width: 15px; height: 15px; }
+.demo-banner button { padding: 0; border: 0; color: var(--gold-bright); background: none; font-size: 12px; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
+#view { animation: view-in .25s ease-out both; }
+.page-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding: 33px 0 27px; }
+.page-heading h1 { margin-top: 6px; font-size: clamp(25px, 2.5vw, 34px); font-weight: 650; line-height: 1.5; letter-spacing: -.04em; }
+.page-heading h1 span { color: var(--gold); }
+.page-heading p { margin-top: 6px; color: var(--muted); font-size: 13px; }
+.heading-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(285px, 1fr); gap: 26px; align-items: start; }
+.main-column, .side-column { min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+
+/* The warm metal card is intentionally the only bright surface. */
+.balance-card { position: relative; isolation: isolate; overflow: hidden; min-height: 276px; padding: 27px 30px 25px; border: 1px solid #efdbaf; border-radius: 23px; color: #2b2b23; background: radial-gradient(ellipse at 5% 10%, rgba(255, 248, 221, .6), transparent 55%), linear-gradient(115deg, #d4b67c 0%, #ead5a8 48%, #dbc395 100%); box-shadow: 0 15px 48px rgba(0, 0, 0, .12); }
+.balance-card::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; opacity: .18; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.36' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
+.card-decoration { position: absolute; z-index: -1; width: 375px; height: 375px; right: -183px; top: -37px; border: 1px solid rgba(106, 86, 46, .22); border-radius: 50%; box-shadow: 0 0 0 21px rgba(255,255,255,.055), 0 0 0 22px rgba(106,86,46,.15), 0 0 0 44px rgba(255,255,255,.035), 0 0 0 45px rgba(106,86,46,.14), 0 0 0 67px rgba(255,255,255,.03), 0 0 0 68px rgba(106,86,46,.11), 0 0 0 90px rgba(255,255,255,.035), 0 0 0 91px rgba(106,86,46,.09); transform: rotate(-15deg); }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.card-brand { display: flex; align-items: center; gap: 7px; font-size: 16px; font-weight: 800; line-height: 1.3; letter-spacing: -.055em; }
+.card-brand svg { width: 23px; height: 23px; }
+.card-brand span { font-weight: 500; }
+.card-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 750; line-height: 1.3; letter-spacing: .16em; text-transform: uppercase; }
+.card-badge svg { width: 13px; height: 13px; }
+.card-amount-label { display: flex; align-items: center; gap: 9px; margin-top: 28px; color: #675b42; font-size: 12px; font-weight: 500; }
+.card-amount-label .icon-btn { width: 44px; height: 44px; margin: -12px 0; border: 0; color: #75644a; }
+.card-amount-label .icon-btn:hover { background: rgba(76, 60, 31, .08); color: #2b2b23; }
+.card-amount-label .icon-btn svg { width: 16px; height: 16px; }
+.balance-amount { position: relative; margin-top: 4px; font-size: clamp(31px, 3.2vw, 43px); font-weight: 750; line-height: 1.25; letter-spacing: -.055em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.balance-currency { margin-right: 6px; font-size: .64em; font-weight: 500; vertical-align: .08em; }
+.balance-hidden { letter-spacing: .12em; }
+.card-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-top: 28px; }
+.account-number { color: #63583f; font-size: 12px; font-weight: 600; letter-spacing: .13em; }
+.card-owner { margin-top: 3px; font-size: 13px; font-weight: 650; letter-spacing: -.01em; }
+.card-chip { display: grid; place-items: center; width: 38px; height: 30px; border: 1px solid rgba(102, 78, 33, .4); border-radius: 7px; color: #897346; background: rgba(246, 227, 185, .42); }
+.card-chip svg { width: 30px; height: 24px; stroke-width: 1; }
+.balance-caption { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 11px; color: var(--faint); font-size: 12px; }
+.balance-caption svg { width: 13px; height: 13px; }
+.quick-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: -2px; }
+.quick-action { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 9px; min-width: 0; min-height: 91px; padding: 5px 2px; border: 0; background: transparent; }
+.quick-icon { width: 52px; height: 52px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 17px; background: var(--panel); color: var(--paper); transition: background .15s, border-color .15s, transform .15s; }
+.quick-action:first-child .quick-icon { color: var(--gold); background: #292a21; border-color: rgba(231, 200, 138, .15); }
+.quick-action:hover .quick-icon { transform: translateY(-2px); border-color: rgba(231, 200, 138, .35); background: var(--panel-hover); }
+.quick-icon svg { width: 21px; height: 21px; stroke-width: 1.6; }
+.quick-label { font-size: 12px; line-height: 1.5; color: #b5bbb0; text-align: center; }
+.section-card { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 23px 14px; }
+.section-title { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 650; letter-spacing: -.025em; }
+.section-title svg { width: 19px; height: 19px; color: var(--gold); }
+.section-body { padding: 4px 23px 23px; }
+.text-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 5px 0 5px 8px; border: 0; background: transparent; color: var(--gold); font-size: 12px; font-weight: 650; white-space: nowrap; }
+.text-btn svg { width: 15px; height: 15px; }
+.text-btn:hover { color: var(--gold-bright); }
+.insight-card { padding: 24px; }
+.insight-card .section-heading { padding: 0; }
+.insight-card .eyebrow { color: var(--faint); letter-spacing: .07em; font-size: 12px; }
+.insight-value { margin-top: 17px; font-size: 29px; line-height: 1.3; font-weight: 750; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.insight-value small { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0; margin-left: 4px; }
+.spark-chart { position: relative; height: 112px; display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: 25px; border-bottom: 1px solid var(--line); background: repeating-linear-gradient(to top, transparent, transparent calc(33.333% - 1px), rgba(228,234,220,.045) calc(33.333% - 1px), rgba(228,234,220,.045) 33.333%); }
+.spark-bar { position: relative; width: 100%; max-width: 25px; height: var(--bar-height, 40%); border-radius: 5px 5px 0 0; background: #3c4434; transition: height .4s; }
+.spark-bar:last-child { background: var(--gold); }
+.spark-labels { display: flex; justify-content: space-between; margin-top: 10px; color: var(--faint); font-size: 12px; }
+.insight-footer { display: flex; align-items: center; gap: 7px; margin-top: 19px; color: var(--muted); font-size: 12px; }
+.insight-footer svg { width: 15px; height: 15px; color: var(--green); }
+.insight-footer strong { color: var(--green); font-weight: 600; }
+.stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.stat-card { position: relative; min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+.stat-icon { display: inline-grid; place-items: center; width: 35px; height: 35px; margin-bottom: 17px; border-radius: 11px; background: #2c3329; color: var(--green); }
+.stat-icon svg { width: 18px; height: 18px; }
+.stat-card:nth-child(2) .stat-icon { background: #332d24; color: var(--gold); }
+.stat-label { color: var(--muted); font-size: 12px; }
+.stat-value { margin-top: 4px; color: var(--paper); font-size: 21px; line-height: 1.4; font-weight: 750; letter-spacing: -.04em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat-value small { color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+.transaction-list { padding: 0 23px 7px; }
+.transaction-row { display: flex; align-items: center; gap: 13px; min-height: 82px; padding: 17px 0; border-bottom: 1px solid var(--line); }
+.transaction-row:last-child { border-bottom: 0; }
+.transaction-icon { display: inline-grid; place-items: center; flex-shrink: 0; width: 43px; height: 43px; border-radius: 14px; color: #b4bbac; background: #292e26; }
+.transaction-icon.deposit, .deposit .transaction-icon { color: #a4c8b0; background: #26362b; }
+.transaction-icon.withdraw, .withdraw .transaction-icon { color: #d9bcb1; background: #372e29; }
+.transaction-icon.interest, .interest .transaction-icon { color: var(--gold); background: #363022; }
+.transaction-icon svg { width: 19px; height: 19px; }
+.transaction-copy { min-width: 0; flex: 1; }
+.transaction-title { font-weight: 600; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.transaction-meta { margin-top: 3px; color: var(--faint); font-size: 12px; line-height: 1.5; }
+.transaction-amount { margin-left: auto; font-size: 15px; font-weight: 700; letter-spacing: -.035em; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.transaction-amount small { display: block; margin-top: 3px; color: var(--faint); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+.transaction-amount.positive, .positive { color: var(--green); }
+.transaction-amount.negative, .negative { color: #ddd4c7; }
+.transaction-list > .text-btn { display: flex; width: 100%; margin: 6px 0 2px; padding: 10px; color: var(--muted); }
+.empty-state { display: flex; flex-direction: column; align-items: center; padding: 42px 24px; color: var(--muted); text-align: center; font-size: 13px; }
+.empty-state > svg { width: 34px; height: 34px; margin-bottom: 14px; color: var(--faint); }
+.empty-state strong { margin-bottom: 5px; color: var(--paper); font-size: 15px; }
+.chart-legend { display: flex; gap: 15px; flex-wrap: wrap; margin: 15px 0; color: var(--muted); font-size: 12px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.distribution-row { display: flex; justify-content: space-between; align-items: center; margin: 16px 0 7px; color: var(--muted); font-size: 12px; }
+.distribution-row strong { color: var(--paper); font-weight: 600; }
+.distribution-track { height: 5px; overflow: hidden; border-radius: 4px; background: #2d332a; }
+.distribution-fill { height: 100%; border-radius: inherit; background: var(--gold); }
+
+/* Members, records and profile share one clear information rhythm. */
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+.search-field { display: flex; align-items: center; gap: 11px; width: min(100%, 370px); min-height: 49px; padding: 0 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); color: var(--faint); }
+.search-field svg { width: 19px; height: 19px; }
+.search-field input { width: 100%; min-height: 47px; border: 0; outline: 0; background: transparent; color: var(--paper); font-size: 16px; }
+.segment { white-space: nowrap; }
+.login-role-tabs { display: flex; margin-top: 24px; }
+.login-role-tabs .segment { flex: 1; min-height: 44px; }
+.insight-card .section-heading .segmented { flex-shrink: 0; }
+.search-field:focus-within { border-color: #958365; box-shadow: 0 0 0 3px rgba(231,200,138,.07); }
+.search-field input:focus-visible { outline: 0; }
+input::placeholder, textarea::placeholder { opacity: 1; color: #71796c; }
+.filter-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+.chip { min-height: 44px; padding: 7px 15px; border: 1px solid var(--line); border-radius: 30px; color: var(--muted); background: transparent; font-size: 12px; font-weight: 600; }
+.chip.active { border-color: rgba(231,200,138,.24); color: var(--gold); background: var(--gold-dim); }
+.chip:hover { color: var(--paper); border-color: #535b4b; }
+.tableish-header { display: grid; grid-template-columns: 1fr 150px 105px; gap: 14px; padding: 14px 24px; border-bottom: 1px solid var(--line); color: var(--faint); font-size: 12px; }
+.tableish-header > :nth-child(n+2) { text-align: right; }
+.member-list { padding: 0 23px; }
+.member-row { display: flex; align-items: center; gap: 12px; min-height: 87px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.member-row:last-child { border-bottom: 0; }
+.member-row > .avatar { width: 40px; height: 40px; font-size: 13px; background: #2f342a; border-color: #414936; color: #c4cdbb; }
+.member-main { min-width: 0; flex: 1; }
+.member-name { font-size: 14px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.member-meta { margin-top: 4px; color: var(--faint); font-size: 12px; }
+.member-balance { margin-left: auto; min-width: 100px; font-size: 15px; font-weight: 700; letter-spacing: -.03em; text-align: right; font-variant-numeric: tabular-nums; }
+.member-balance small { display: block; color: var(--faint); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+.member-actions { display: flex; justify-content: flex-end; gap: 7px; margin-left: 11px; }
+.member-actions .icon-btn { width: 44px; height: 44px; border-radius: 11px; }
+.member-actions .button-small { min-height: 44px; }
+.profile-card { padding: 28px; }
+.profile-card > .avatar { width: 68px; height: 68px; margin-bottom: 16px; font-size: 23px; }
+.profile-card h2 { font-size: 24px; font-weight: 650; letter-spacing: -.035em; }
+.profile-card > p { color: var(--muted); font-size: 13px; }
+.profile-card .badge { margin-top: 13px; }
+.profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 25px; margin-top: 28px; padding-top: 26px; border-top: 1px solid var(--line); }
+.profile-field { color: var(--muted); font-size: 12px; }
+.profile-value { margin-top: 5px; color: var(--paper); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.settings-list { padding: 0 23px 8px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; width: 100%; min-height: 68px; padding: 17px 0; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--paper); text-align: left; }
+.settings-row:last-child { border-bottom: 0; }
+.settings-row > span:first-child { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; }
+.settings-row > span:last-child { color: var(--muted); font-size: 12px; }
+.settings-row svg { width: 19px; height: 19px; color: var(--muted); }
+.settings-row:hover { color: var(--gold); }
+.badge { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 12px; font-weight: 650; line-height: 1.5; letter-spacing: .045em; }
+.badge-gold { border-color: rgba(231,200,138,.14); color: var(--gold); background: var(--gold-dim); }
+.badge-green { border-color: rgba(145,200,168,.14); color: var(--green); background: rgba(145,200,168,.07); }
+.badge-muted { color: var(--muted); background: rgba(146,152,142,.07); }
+
+/* Controls keep visible labels and generous touch targets. */
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 49px; padding: 11px 19px; border: 1px solid transparent; border-radius: 12px; color: var(--paper); background: var(--panel-raised); font-size: 14px; font-weight: 700; line-height: 1.6; text-align: center; transition: background .15s, border-color .15s, transform .15s; }
+.button svg { width: 18px; height: 18px; }
+.button:not(:disabled):active { transform: translateY(1px); }
+.button-primary { border-color: var(--gold); color: #26281f; background: var(--gold); }
+.button-primary:hover:not(:disabled) { background: var(--gold-bright); border-color: var(--gold-bright); }
+.button-secondary { border-color: #3b4335; color: var(--paper); background: #272d23; }
+.button-secondary:hover:not(:disabled) { background: #333b2d; border-color: #57614d; }
+.button-danger { border-color: rgba(238,154,145,.22); color: var(--red); background: rgba(238,154,145,.08); }
+.button-danger:hover:not(:disabled) { background: rgba(238,154,145,.15); }
+.button-ghost { border-color: var(--line); background: transparent; color: var(--muted); }
+.button-ghost:hover:not(:disabled) { background: var(--panel-raised); color: var(--paper); }
+.button-small { min-height: 44px; padding: 7px 12px; border-radius: 9px; font-size: 12px; }
+.button-wide { width: 100%; }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.field label, label.field-label { display: block; color: #c2c7ba; font-size: 13px; font-weight: 600; }
+.field input, .field select, .field textarea { width: 100%; min-height: 51px; padding: 13px 15px; border: 1px solid #3a4234; border-radius: 11px; outline: 0; background: #141813; color: var(--paper); font-size: 16px; line-height: 1.5; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: #b59d70; box-shadow: 0 0 0 3px rgba(231,200,138,.07); }
+.field input[readonly] { border-color: var(--line); background: #1e221c; color: var(--muted); }
+.field input[type=file] { padding: 11px; font-size: 13px; }
+.field input[type=file]::file-selector-button { margin-right: 12px; padding: 7px 11px; border: 0; border-radius: 6px; background: #39412f; color: var(--paper); font: inherit; cursor: pointer; }
+.field textarea { min-height: 94px; resize: vertical; }
+.field select { appearance: auto; }
+.field-hint { color: var(--faint); font-size: 12px; line-height: 1.6; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 16px; }
+.form-grid .full-width { grid-column: 1 / -1; }
+.form-stack { display: flex; flex-direction: column; gap: 20px; }
+.amount-input { position: relative; }
+.amount-input > span { position: absolute; top: 50%; left: 17px; transform: translateY(-50%); color: var(--muted); font-size: 24px; }
+.amount-input input { min-height: 77px; padding-left: 44px; padding-right: 20px; font-size: 31px; font-weight: 650; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+.form-error { min-height: 0; color: var(--red); font-size: 13px; line-height: 1.7; }
+.form-error:empty { display: none; }
+.form-note { padding: 13px 15px; border-radius: 10px; border: 1px solid var(--line); background: #20251d; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.form-note strong { color: #ccd2c4; }
+.review-grid { padding: 4px 17px; border: 1px solid var(--line); border-radius: 13px; background: #141813; }
+.review-row { display: flex; justify-content: space-between; gap: 18px; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.review-row:last-child { border-bottom: 0; }
+.review-row > :first-child { color: var(--muted); }
+.review-row > :last-child { font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+.review-row.total { padding: 19px 0; }
+.review-row.total > :last-child { color: var(--gold); font-size: 23px; letter-spacing: -.03em; line-height: 1.25; }
+.preview-table-wrap { max-width: 100%; max-height: 280px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+.preview-table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+.preview-table th { position: sticky; top: 0; padding: 11px 12px; color: var(--muted); background: #242a20; font-weight: 600; text-align: left; }
+.preview-table td { padding: 11px 12px; border-top: 1px solid var(--line); }
+.preview-table th:last-child, .preview-table td:last-child { text-align: right; }
+.notice { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; border: 1px solid rgba(145,200,168,.16); border-radius: 12px; color: #b9cdbd; background: rgba(145,200,168,.055); font-size: 12px; line-height: 1.8; }
+.notice svg { width: 17px; height: 17px; margin-top: 3px; }
+.notice-warning { border-color: rgba(231,200,138,.16); background: rgba(231,200,138,.055); color: #c7b895; }
+.split-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+.split-actions > .button { flex: 1; }
+.segmented { display: flex; gap: 5px; padding: 5px; border: 1px solid var(--line); border-radius: 13px; background: #141813; }
+.segment { flex: 1; min-height: 44px; padding: 9px 12px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; }
+.segment.active { border-color: #414733; background: #303627; color: var(--gold); box-shadow: 0 2px 5px rgba(0,0,0,.08); }
+.inline-status { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.inline-status::before { content: ''; display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(145,200,168,.18); }
+.loading-state { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 240px; color: var(--muted); font-size: 14px; }
+.loading-state::before { content: ''; width: 21px; height: 21px; border: 2px solid #343b2d; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+
+/* Sign in is an editorial composition with a real account card preview. */
+.login-shell { position: relative; min-height: 100dvh; padding: 38px clamp(26px, 6vw, 100px) 28px; overflow: hidden; background: radial-gradient(ellipse at 20% 37%, #1d241a 0%, #111410 45%, #101211 80%); }
+.login-shell::before { content: ''; position: absolute; right: -280px; top: -240px; width: 760px; height: 760px; border: 1px solid rgba(231,200,138,.055); border-radius: 50%; box-shadow: 0 0 0 85px rgba(231,200,138,.025), 0 0 0 86px rgba(231,200,138,.035), 0 0 0 170px rgba(231,200,138,.012), 0 0 0 171px rgba(231,200,138,.025); pointer-events: none; }
+.login-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+.login-top .eyebrow { color: var(--faint); font-size: 12px; letter-spacing: .1em; }
+.login-brand { display: inline-flex; align-items: center; gap: 9px; }
+.login-content { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(330px, .8fr); align-items: center; gap: clamp(50px, 8vw, 135px); max-width: 1120px; min-height: calc(100dvh - 176px); margin: 0 auto; padding: 55px 0; }
+.login-kicker { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 20px; color: var(--gold); font-size: 12px; font-weight: 650; letter-spacing: .15em; text-transform: uppercase; }
+.login-kicker::before { content: ''; width: 25px; height: 1px; background: var(--gold); }
+.login-title { max-width: 630px; font-size: clamp(37px, 4.3vw, 63px); font-weight: 600; line-height: 1.35; letter-spacing: -.055em; }
+.login-title span { color: var(--gold); }
+.login-subtitle { max-width: 410px; margin-top: 21px; color: #969f8e; font-size: 14px; line-height: 1.9; }
+.login-card-preview { max-width: 386px; min-height: 231px; margin-top: 37px; padding: 23px 27px; transform: rotate(-5deg); box-shadow: 0 30px 50px rgba(0,0,0,.26); }
+.login-card-preview .card-amount-label { margin-top: 23px; }
+.login-card-preview .balance-amount { font-size: 34px; }
+.login-card-preview .card-bottom { margin-top: 23px; }
+.login-card-preview .card-decoration { right: -233px; }
+.login-panel { position: relative; padding: 33px; border: 1px solid #353c2f; border-radius: 25px; background: #191e16; box-shadow: 0 22px 80px rgba(0,0,0,.13); }
+.login-panel h2 { font-size: 24px; font-weight: 650; letter-spacing: -.04em; }
+.login-panel > p { margin-top: 6px; color: var(--muted); font-size: 13px; }
+.login-panel .segmented { margin-top: 24px; }
+.login-form { display: flex; flex-direction: column; gap: 19px; margin-top: 24px; }
+.login-form > .button { min-height: 53px; margin-top: 2px; }
+.login-trust { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 19px; color: var(--faint); font-size: 12px; }
+.login-trust svg { width: 13px; height: 13px; }
+.demo-options { display: flex; flex-direction: column; gap: 9px; margin-top: 23px; padding-top: 21px; border-top: 1px solid var(--line); }
+.demo-options > p { margin-bottom: 2px; color: var(--faint); font-size: 12px; text-align: center; }
+.demo-options .button { min-height: 45px; font-size: 12px; font-weight: 600; }
+.login-footer { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 15px; max-width: 1200px; margin: 0 auto; padding-top: 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12px; }
+.login-footer > span:last-child { letter-spacing: .09em; font-size: 12px; }
+
+/* Native dialogs preserve keyboard focus and scroll within the screen. */
+dialog.modal { width: min(500px, calc(100% - 40px)); max-height: calc(100dvh - 70px); padding: 0; overflow: auto; border: 1px solid #424a3b; border-radius: 23px; color: var(--paper); background: #1b2018; box-shadow: 0 28px 100px rgba(0,0,0,.5); }
+dialog.modal::backdrop { background: rgba(5,9,4,.77); backdrop-filter: blur(5px); }
+dialog.modal[open] { animation: dialog-in .2s ease-out; }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 25px 26px 18px; }
+.modal-title { font-size: 21px; font-weight: 650; line-height: 1.55; letter-spacing: -.035em; }
+.modal-header p { margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.modal-close { flex-shrink: 0; display: grid; place-items: center; width: 44px; height: 44px; margin: -2px -3px 0 0; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--muted); }
+.modal-close svg { width: 18px; height: 18px; }
+.modal-close:hover { background: var(--panel-hover); color: var(--paper); }
+.modal-body { display: flex; flex-direction: column; gap: 20px; padding: 5px 26px 25px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 26px 23px; border-top: 1px solid var(--line); background: rgba(10,15,8,.12); }
+.modal-footer > .button { flex: 1; }
+.toast-region { position: fixed; z-index: 100; display: flex; flex-direction: column; gap: 9px; width: min(390px, calc(100% - 34px)); right: 24px; bottom: 25px; pointer-events: none; }
+.toast { display: flex; align-items: flex-start; gap: 10px; padding: 15px 18px; border: 1px solid #4c5a41; border-radius: 14px; color: var(--paper); background: #2a3424; box-shadow: 0 8px 30px rgba(0,0,0,.3); font-size: 13px; line-height: 1.7; animation: toast-in .25s ease-out; pointer-events: auto; }
+.toast svg { width: 18px; height: 18px; margin-top: 2px; color: var(--green); }
+.toast.error { border-color: #70473e; background: #36271f; }
+.toast.error svg { color: var(--red); }
+.toast.success { border-color: #466043; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes view-in { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Exact component composition used by the application. */
+.skip-link { position: fixed; z-index: 200; left: 16px; top: -90px; padding: 12px 20px; border-radius: 10px; color: #181d13; background: var(--gold); font-weight: 700; }
+.skip-link:focus { top: 16px; }
+.modal-open { overflow: hidden; }
+#view:focus { outline: none; }
+.brand-dot { color: var(--gold); }
+.sidebar-caption { margin: -30px 12px 21px; color: var(--faint); font-size: 12px; line-height: 1.7; letter-spacing: .075em; }
+.sidebar-footer { margin-top: auto; padding: 24px 0 0; }
+.desktop-sidebar .sidebar-footer .sidebar-note { display: flex; align-items: center; gap: 11px; margin: 0 10px 24px; font-size: 12px; line-height: 1.8; }
+.sidebar-footer .sidebar-note svg { width: 24px; height: 24px; color: var(--gold); }
+.sidebar-footer .sidebar-note strong { color: #bdc6b4; font-size: 14px; font-weight: 500; }
+.sidebar-footer .button { font-size: 12px; }
+.app-footer { display: flex; justify-content: space-between; gap: 15px; margin-top: 37px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12px; }
+.app-footer span { font-size: 12px; letter-spacing: .08em; }
+.today-label { color: var(--faint); font-size: 12px; white-space: nowrap; }
+.greeting-dot { margin-left: 2px; color: var(--gold); }
+.demo-banner { justify-content: flex-start; margin: 0 0 19px; border: 1px solid rgba(231,200,138,.14); border-radius: 9px; text-align: left; }
+.main-column > .balance-card + .balance-caption { margin: -11px 0 -9px; }
+.balance-caption > span { margin-left: auto; }
+.balance-caption { justify-content: flex-start; }
+.balance-toggle, .copy-account { display: inline-grid; flex-shrink: 0; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #6f6147; }
+.balance-toggle { margin: -12px 0; }
+.balance-toggle:hover, .copy-account:hover { background: rgba(76,60,31,.08); color: #2b2b23; }
+.balance-toggle svg { width: 17px; height: 17px; }
+.copy-account { width: 44px; height: 44px; margin: -13px 0 -13px 2px; }
+.copy-account svg { width: 13px; height: 13px; }
+.account-number { display: flex; align-items: center; }
+.amount-decimal { font-size: .65em; font-weight: 500; letter-spacing: -.025em; }
+.card-owner { max-width: 310px; overflow-wrap: anywhere; }
+.card-balance { position: relative; min-width: 0; }
+.currency { margin-right: 4px; color: var(--muted); font-size: .75em; }
+.stat-unit { margin-left: 6px; color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+.stat-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.stat-top .stat-icon { flex-shrink: 0; margin: 0; }
+.stat-top + .stat-value { margin-top: 15px; }
+.stat-note { margin-top: 8px; color: var(--faint); font-size: 12px; line-height: 1.7; }
+#view > .stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 24px; }
+.admin-quick-actions { margin: 2px 0 20px; }
+.transaction-row { width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--paper); text-align: left; }
+.transaction-row:hover { background: rgba(221,235,209,.018); }
+.transaction-title, .transaction-meta { display: block; }
+.transaction-amount > span { display: block; margin-top: 3px; color: var(--faint); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+.insight-card .section-heading .eyebrow { display: none; }
+.insight-card .section-heading { align-items: center; }
+.insight-card .section-heading .segmented { gap: 2px; padding: 3px; border-radius: 11px; }
+.insight-card .section-heading .segment { min-height: 44px; padding: 7px 10px; font-size: 12px; }
+.insight-subtitle { margin-top: 5px; color: var(--faint); font-size: 12px; }
+.spark-column { display: flex; flex: 1; align-items: flex-end; justify-content: center; min-width: 0; height: 100%; }
+.spark-bar:last-child { background: #3c4434; }
+.spark-bar.highlight { background: var(--gold); }
+.distribution-row { display: block; margin: 0 0 18px; }
+.distribution-row > div:first-child { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.distribution-fill { display: block; }
+.distribution-list { padding-top: 11px; }
+.member-main { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; column-gap: 15px; }
+.member-name { grid-column: 1; }
+.member-meta { grid-column: 1; }
+.member-balance { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
+.member-row:nth-child(3n+2) .member-avatar { border-color: #544936; background: #383024; color: #d4c6ab; }
+.member-row:nth-child(3n+3) .member-avatar { border-color: #3f4d48; background: #293731; color: #b9ccc2; }
+.toolbar > .badge { align-self: center; }
+.section-heading > .form-note { padding: 0; border: 0; background: none; }
+.history-controls { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 22px; }
+.history-date { min-width: 165px; }
+.history-date select { min-height: 44px; padding: 10px 14px; border-color: var(--line); background: var(--panel); font-size: 12px; }
+.profile-hero { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.profile-hero > .profile-avatar { width: 69px; height: 69px; margin-bottom: 15px; border-color: #556146; font-size: 23px; }
+.profile-hero > h2, .profile-hero > h3 { font-size: 24px; font-weight: 650; letter-spacing: -.035em; }
+.profile-hero > p { margin-top: 5px; color: var(--muted); font-size: 13px; }
+.profile-hero > .badge { margin-top: 13px; }
+.profile-hero > .brand-lockup { margin-bottom: 12px; }
+.compact-profile > .profile-avatar { width: 57px; height: 57px; font-size: 19px; }
+.compact-profile > .review-amount { margin-top: 18px; }
+.profile-value { display: block; }
+.settings-row { justify-content: flex-start; gap: 12px; }
+.settings-row > span { flex: 1; font-size: 14px; }
+.settings-row > svg:last-child { width: 15px; margin-left: auto; }
+.membership-note { position: relative; isolation: isolate; overflow: hidden; padding: 26px; border: 1px solid #343e2b; border-radius: var(--radius); background: linear-gradient(135deg, #252d1f, #1a2117); }
+.membership-note::after { content: ''; position: absolute; right: -95px; bottom: -110px; z-index: -1; width: 260px; height: 260px; border: 1px solid rgba(231,200,138,.09); border-radius: 50%; box-shadow: 0 0 0 28px rgba(231,200,138,.025), 0 0 0 29px rgba(231,200,138,.05), 0 0 0 57px rgba(231,200,138,.018), 0 0 0 58px rgba(231,200,138,.04); }
+.membership-emblem { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 22px; border: 1px solid rgba(231,200,138,.2); border-radius: 50%; color: var(--gold); }
+.membership-emblem svg { width: 18px; height: 18px; }
+.membership-note .eyebrow { font-size: 12px; letter-spacing: .09em; }
+.membership-note h2 { margin-top: 10px; color: #e5e9dc; font-size: 25px; font-weight: 500; line-height: 1.55; letter-spacing: -.03em; }
+.membership-note > p:not(.eyebrow) { margin-top: 14px; color: #939f88; font-size: 12px; line-height: 1.9; }
+.membership-note .text-btn { margin-top: 15px; padding-left: 0; }
+.tool-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; margin-bottom: 26px; }
+.tool-card { display: flex; flex-direction: column; align-items: flex-start; padding: 25px; }
+.tool-icon { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 21px; border: 1px solid rgba(231,200,138,.13); border-radius: 14px; color: var(--gold); background: #2c2e22; }
+.tool-icon svg { width: 21px; height: 21px; }
+.tool-card h2 { font-size: 18px; font-weight: 600; letter-spacing: -.025em; }
+.tool-card > p { flex: 1; margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.tool-card .text-btn { justify-content: flex-start; margin-top: 15px; padding: 8px 0 0; white-space: normal; text-align: left; }
+.demo-reset { display: flex; margin: 24px auto 0; border: 0; color: var(--faint); font-size: 12px; }
+.detail-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+.detail-actions .button { padding-left: 10px; padding-right: 10px; font-size: 13px; }
+.detail-heading { margin-top: 5px; font-size: 15px; font-weight: 600; }
+.detail-transactions { padding: 0; margin-top: -12px; }
+.review-amount { margin-top: 2px; color: var(--gold); font-size: clamp(27px,7.5vw,36px); font-weight: 750; line-height: 1.35; text-align: center; letter-spacing: -.045em; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.review-amount.positive { color: var(--green); }
+.review-amount.negative { color: #ddd4c7; }
+.review-subtitle { margin-top: -11px; margin-bottom: 3px; color: var(--muted); font-size: 13px; text-align: center; }
+.reference-id { max-width: 230px; color: var(--faint); font-size: 12px; overflow-wrap: anywhere; }
+.import-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.import-summary strong { color: var(--gold); font-size: 17px; }
+.import-summary span { color: var(--muted); font-size: 12px; text-align: right; }
+#confirm-import { margin-top: 17px; }
+.transaction-detail-icon { width: 57px; height: 57px; margin: 0 auto -5px; border-radius: 18px; }
+.transaction-detail-icon svg { width: 26px; height: 26px; }
+.optional { color: var(--faint); font-size: 12px; font-weight: 400; }
+.muted { color: var(--muted); }
+.transact-segments .segment.active[data-type=deposit] { color: var(--green); }
+.transact-segments .segment.active[data-type=withdraw] { color: var(--gold); }
+.inline-status.offline::before { background: var(--gold); box-shadow: none; }
+.login-story { min-width: 0; }
+.login-card-preview { position: relative; min-height: 0; padding: 0; margin: 40px 0 20px 7px; transform: none; box-shadow: none; }
+.login-sample-card { min-height: 239px; padding: 25px 27px; transform: rotate(-5deg); }
+.floating-note { position: absolute; right: -16px; bottom: -20px; display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border: 1px solid #435039; border-radius: 12px; color: #c1ccb6; background: #26311f; box-shadow: 0 9px 25px rgba(0,0,0,.18); font-size: 12px; }
+.floating-note svg { width: 15px; height: 15px; color: var(--green); }
+.login-panel-icon { display: grid; place-items: center; width: 45px; height: 45px; margin-bottom: 24px; border: 1px solid rgba(231,200,138,.2); border-radius: 14px; color: var(--gold); background: #2d3022; }
+.login-panel-icon svg { width: 22px; height: 22px; }
+.login-panel > .eyebrow { margin: 0 0 8px; color: var(--faint); font-size: 12px; letter-spacing: .08em; }
+.login-panel h2 { font-size: 28px; }
+.login-panel-subtitle { margin-top: 9px; color: var(--muted); font-size: 13px; }
+.login-panel .demo-options { margin: 26px 0 18px; padding: 0; border: 0; gap: 10px; }
+.login-panel .demo-options .button { min-height: 51px; font-size: 14px; }
+.login-panel .notice { font-size: 12px; }
+
+@media (min-width: 1440px) {
+  .app-main { padding-left: 55px; padding-right: 55px; }
+  .dashboard-grid { grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 30px; }
+  .balance-card { min-height: 287px; padding: 29px 32px 26px; }
+  .card-amount-label { margin-top: 30px; }
+  .card-bottom { margin-top: 31px; }
+  .login-card-preview { min-height: 0; padding: 0; }
+}
+
+@media (max-width: 1150px) {
+  .app-main { padding-left: 28px; padding-right: 28px; }
+  .dashboard-grid { grid-template-columns: minmax(0, 1.35fr) minmax(260px, 1fr); gap: 20px; }
+  .balance-card { padding: 25px 24px; }
+  .balance-amount { font-size: 35px; }
+  .insight-card { padding: 21px; }
+  .stat-card { padding: 17px; }
+  .stat-value { font-size: 19px; }
+  .section-heading { padding-left: 20px; padding-right: 20px; }
+  .transaction-list { padding-left: 20px; padding-right: 20px; }
+  .login-content { gap: 55px; grid-template-columns: minmax(0, 1fr) minmax(320px, .85fr); }
+  .login-panel { padding: 28px; }
+  #view > .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1000px) {
+  .desktop-sidebar { width: 200px; padding-left: 15px; padding-right: 15px; }
+  .app-shell { padding-left: 200px; }
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .side-column { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .balance-card { min-height: 280px; }
+  .balance-amount { font-size: 42px; }
+  .card-decoration { right: -140px; }
+  .card-amount-label { margin-top: 29px; }
+  .quick-actions { margin-top: 0; }
+  .page-heading { padding-top: 29px; }
+  .login-title { font-size: 42px; }
+  .login-content { gap: 36px; }
+  .login-card-preview .balance-amount { font-size: 31px; }
+  .login-card-preview .card-decoration { right: -250px; }
+  .tool-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  :root { --radius: 21px; }
+  .desktop-only, .desktop-sidebar { display: none !important; }
+  .mobile-only { display: initial; }
+  .app-shell { padding-left: 0; padding-bottom: calc(93px + env(safe-area-inset-bottom)); }
+  .app-main { max-width: 580px; padding: 0 22px 24px; }
+  .topbar { height: 91px; border-bottom: 0; }
+  .topbar > .brand-lockup { display: inline-flex; }
+  .topbar > .eyebrow { display: none; }
+  .brand-mark, .brand-mark svg { width: 31px; height: 31px; }
+  .brand-word { font-size: 22px; }
+  .topbar-actions { gap: 10px; }
+  .topbar .icon-btn { width: 44px; height: 44px; }
+  .avatar { width: 44px; height: 44px; font-size: 12px; }
+  .page-heading { padding: 8px 0 24px; align-items: center; gap: 12px; }
+  .page-heading .eyebrow { font-size: 12px; letter-spacing: .15em; }
+  .page-heading h1 { margin-top: 5px; font-size: 25px; line-height: 1.55; letter-spacing: -.05em; }
+  .page-heading p { font-size: 12px; margin-top: 3px; }
+  .page-heading .heading-actions > .badge { font-size: 12px; padding: 5px 7px; }
+  .heading-actions { gap: 6px; }
+  .heading-actions .button { min-height: 44px; padding: 9px 12px; font-size: 12px; }
+  .heading-actions .button svg { width: 16px; height: 16px; }
+  .dashboard-grid { gap: 21px; }
+  .main-column, .side-column { gap: 21px; }
+  .side-column { display: flex; flex-direction: column; }
+  .balance-card { min-height: 235px; padding: 23px 24px 22px; border-radius: 22px; }
+  .card-brand { font-size: 15px; }
+  .card-brand svg { width: 21px; height: 21px; }
+  .card-badge { font-size: 12px; letter-spacing: .15em; }
+  .card-amount-label { margin-top: 24px; font-size: 12px; }
+  .balance-amount { margin-top: 4px; font-size: clamp(31px, 8.8vw, 43px); letter-spacing: -.055em; }
+  .card-bottom { margin-top: 23px; }
+  .account-number { font-size: 12px; letter-spacing: .14em; }
+  .card-owner { font-size: 12px; }
+  .card-chip { width: 33px; height: 26px; border-radius: 6px; }
+  .card-chip svg { width: 26px; height: 21px; }
+  .card-decoration { right: -225px; top: -60px; width: 350px; height: 350px; }
+  .balance-caption { margin-top: 10px; font-size: 12px; }
+  .balance-caption svg { width: 11px; height: 11px; }
+  .quick-actions { gap: 8px; margin-top: -1px; }
+  .quick-action { min-height: 88px; gap: 8px; }
+  .quick-icon { width: 52px; height: 52px; border-radius: 17px; }
+  .quick-label { font-size: 12px; }
+  .section-heading { padding: 19px 20px 9px; }
+  .section-title { font-size: 15px; }
+  .section-body { padding: 8px 20px 20px; }
+  .text-btn { font-size: 12px; }
+  .transaction-list { padding: 0 20px 5px; }
+  .transaction-row { min-height: 77px; padding: 16px 0; gap: 11px; }
+  .transaction-icon { width: 39px; height: 39px; border-radius: 13px; }
+  .transaction-icon svg { width: 17px; height: 17px; }
+  .transaction-title { font-size: 13px; }
+  .transaction-meta { font-size: 12px; }
+  .transaction-amount { font-size: 14px; }
+  .transaction-amount small { font-size: 12px; }
+  .insight-card { padding: 22px; }
+  .insight-value { margin-top: 12px; }
+  .spark-chart { height: 105px; margin-top: 22px; gap: 13px; }
+  .spark-bar { max-width: 29px; }
+  .stat-grid { gap: 12px; }
+  .stat-card { padding: 20px; border-radius: 18px; }
+  .stat-value { font-size: 23px; }
+  .bottom-nav { position: fixed; z-index: 30; inset: auto 0 0; display: flex; align-items: flex-start; justify-content: space-around; min-height: calc(79px + env(safe-area-inset-bottom)); padding: 11px 10px calc(13px + env(safe-area-inset-bottom)); border-top: 1px solid #2b3228; background: rgba(19, 23, 18, .96); backdrop-filter: blur(18px); }
+  .bottom-nav .nav-item { position: relative; display: flex; flex: 1; flex-direction: column; align-items: center; gap: 4px; min-width: 0; min-height: 54px; padding: 4px 7px; border: 0; border-radius: 13px; background: transparent; color: #7f8977; font-size: 12px; line-height: 1.5; }
+  .bottom-nav .nav-icon { position: relative; display: block; width: 22px; min-width: 0; height: 26px; }
+  .bottom-nav svg { width: 21px; height: 21px; stroke-width: 1.6; }
+  .bottom-nav .nav-item.active { color: var(--gold); }
+  .bottom-nav .nav-item.active::before { content: ''; position: absolute; top: -12px; left: calc(50% - 10px); height: 2px; width: 20px; border-radius: 2px; background: var(--gold); }
+  .bottom-nav .nav-item.active .nav-icon { filter: drop-shadow(0 0 8px rgba(231,200,138,.12)); }
+  .demo-banner { min-height: 35px; padding: 7px 13px; gap: 6px; font-size: 12px; }
+  .demo-banner button { font-size: 12px; }
+  .demo-banner svg { width: 13px; height: 13px; }
+  .toolbar { flex-direction: column; align-items: stretch; gap: 13px; margin-bottom: 18px; }
+  .toolbar > .badge { align-self: flex-start; }
+  .search-field { width: 100%; min-height: 48px; border-radius: 12px; }
+  .filter-chips { gap: 6px; }
+  .chip { min-height: 44px; padding: 7px 13px; font-size: 12px; }
+  .tableish-header { display: none; }
+  .member-list { padding: 0 17px; }
+  .member-row { flex-wrap: nowrap; column-gap: 10px; row-gap: 10px; padding: 16px 0; }
+  .member-row > .avatar { width: 36px; height: 36px; font-size: 12px; }
+  .member-name { font-size: 13px; }
+  .member-meta { font-size: 12px; margin-top: 3px; }
+  .member-main { display: block; }
+  .member-balance { min-width: 0; margin: 5px 0 0; font-size: 14px; text-align: left; }
+  .member-actions { flex-shrink: 0; width: auto; margin-left: 0; justify-content: flex-start; gap: 8px; }
+  .member-actions .button-small { min-height: 44px; padding: 7px 11px; font-size: 12px; }
+  .member-actions .icon-btn { width: 44px; height: 44px; }
+  .profile-card { padding: 24px; }
+  .profile-grid { gap: 22px 16px; }
+  .profile-field { font-size: 12px; }
+  .profile-value { font-size: 13px; }
+  .settings-list { padding-left: 20px; padding-right: 20px; }
+  .settings-row { min-height: 66px; }
+  .settings-row > span:first-child { gap: 10px; font-size: 13px; }
+  .settings-row > span:last-child { font-size: 12px; }
+  .toast-region { bottom: calc(95px + env(safe-area-inset-bottom)); right: 17px; }
+  .login-shell { padding: 28px 24px 24px; }
+  .login-top { align-items: center; }
+  .login-top .eyebrow { font-size: 12px; letter-spacing: .09em; max-width: 80px; text-align: right; }
+  .login-content { display: flex; flex-direction: column; align-items: stretch; gap: 34px; max-width: 430px; min-height: 0; padding: 45px 0 34px; }
+  .login-kicker { margin-bottom: 16px; font-size: 12px; }
+  .login-title { max-width: 400px; font-size: clamp(34px, 9.7vw, 47px); line-height: 1.38; }
+  .login-subtitle { max-width: 350px; margin-top: 16px; font-size: 12px; line-height: 1.9; }
+  .login-card-preview { max-width: 330px; min-height: 0; margin: 30px auto 20px; padding: 0; transform: none; }
+  .login-sample-card { min-height: 222px; padding: 22px 23px; transform: rotate(-4deg); }
+  .login-card-preview .card-amount-label { margin-top: 20px; }
+  .login-card-preview .balance-amount { font-size: 32px; }
+  .login-card-preview .card-bottom { margin-top: 19px; }
+  .login-card-preview .card-decoration { top: -70px; right: -245px; }
+  .login-panel { padding: 26px 23px; border-radius: 21px; }
+  .login-panel h2 { font-size: 22px; }
+  .login-panel > p { font-size: 12px; }
+  .login-panel .segmented { margin-top: 21px; }
+  .login-form { gap: 18px; margin-top: 22px; }
+  .login-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 18px; max-width: 430px; font-size: 12px; }
+  .login-footer > span:last-child { font-size: 12px; }
+  dialog.modal { position: fixed; inset: auto 0 0; width: 100%; max-width: 100%; max-height: calc(100dvh - 25px); margin: 0; border: 1px solid #414a38; border-bottom: 0; border-radius: 25px 25px 0 0; }
+  dialog.modal::before { content: ''; display: block; width: 32px; height: 4px; margin: 11px auto -4px; border-radius: 4px; background: #4b5443; }
+  .modal-header { padding: 23px 23px 17px; gap: 13px; }
+  .modal-title { font-size: 21px; }
+  .modal-close { width: 44px; height: 44px; }
+  .modal-body { padding: 4px 23px 23px; gap: 19px; }
+  .modal-footer { padding: 17px 23px calc(22px + env(safe-area-inset-bottom)); }
+  .field label { font-size: 13px; }
+  .form-grid { gap: 17px 12px; }
+  .form-grid:has(.field:nth-child(3)) { grid-template-columns: 1fr; }
+  .form-note, .notice { font-size: 12px; }
+  .form-error { font-size: 12px; }
+  .floating-note { right: -1px; bottom: -20px; padding: 9px 12px; font-size: 12px; }
+  .app-footer { flex-direction: column; align-items: center; gap: 6px; margin-top: 31px; padding-top: 22px; font-size: 12px; }
+  .app-footer span { font-size: 12px; letter-spacing: .04em; }
+  .main-column > .balance-card + .balance-caption { margin: -11px 0 -9px; }
+  .history-controls { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 20px; }
+  .history-date select { width: 100%; }
+  .tool-grid { gap: 12px; margin-bottom: 22px; }
+  .tool-card { padding: 19px 17px; }
+  .tool-icon { margin-bottom: 17px; }
+  .tool-card h2 { font-size: 16px; }
+  .tool-card .text-btn { font-size: 12px; line-height: 1.7; }
+  .tool-card .text-btn svg { width: 13px; height: 13px; }
+  .stat-top { align-items: flex-start; gap: 6px; }
+  .stat-top .stat-icon { width: 28px; height: 28px; border-radius: 9px; }
+  .stat-top .stat-icon svg { width: 15px; height: 15px; }
+  .stat-top .stat-label { font-size: 12px; line-height: 1.7; }
+  .stat-top + .stat-value { margin-top: 14px; }
+  .stat-note { font-size: 12px; }
+  #view > .stat-grid .stat-value { font-size: 21px; }
+  .insight-card .section-heading .segment { min-height: 44px; }
+  .insight-value { font-size: 29px; }
+  .membership-note { padding: 24px; }
+  .membership-note h2 { font-size: 25px; }
+  .detail-transactions .transaction-meta { font-size: 12px; }
+  .reference-id { max-width: 180px; }
+  .login-panel h2 { font-size: 26px; }
+  .login-panel .demo-options .button { font-size: 13px; }
+}
+
+@media (max-width: 374px) {
+  .app-main { padding-left: 17px; padding-right: 17px; }
+  .topbar { height: 82px; }
+  .brand-word { font-size: 20px; }
+  .brand-lockup { gap: 8px; }
+  .page-heading h1 { font-size: 23px; }
+  .page-heading { padding-bottom: 21px; }
+  .balance-card { min-height: 225px; padding: 22px; }
+  .balance-amount { font-size: 32px; }
+  .balance-currency { margin-right: 4px; }
+  .card-badge { font-size: 12px; }
+  .card-amount-label { margin-top: 22px; }
+  .card-bottom { margin-top: 22px; }
+  .quick-icon { width: 49px; height: 49px; border-radius: 15px; }
+  .quick-label { font-size: 12px; }
+  .section-heading { padding-left: 17px; padding-right: 17px; }
+  .transaction-list { padding-left: 17px; padding-right: 17px; }
+  .transaction-row { gap: 9px; }
+  .transaction-title { font-size: 12px; }
+  .transaction-amount { font-size: 13px; }
+  .transaction-meta { font-size: 12px; }
+  .stat-card { padding: 17px; }
+  .stat-value { font-size: 21px; }
+  .login-shell { padding-left: 20px; padding-right: 20px; }
+  .login-panel { padding-left: 20px; padding-right: 20px; }
+  .member-list { padding: 0 15px; }
+  .member-row { column-gap: 8px; }
+  .member-row > .avatar { width: 32px; height: 32px; }
+  .member-name { font-size: 12px; }
+  .member-balance { font-size: 13px; }
+  .member-actions { margin-left: 0; }
+  .tool-card { padding: 18px 15px; }
+  .tool-card h2 { font-size: 15px; }
+  .tool-card > p { font-size: 12px; }
+  .today-label { font-size: 12px; }
+  .card-brand { font-size: 14px; }
+  .card-badge { letter-spacing: .08em; }
+  .balance-caption { gap: 4px; }
+  .balance-caption > span { font-size: 12px; }
+  #view > .stat-grid .stat-value { font-size: 19px; }
+  .stat-card { padding: 15px; }
+  .stat-unit { margin-left: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+@media print {
+  :root { color-scheme: light; }
+  body { background: white; color: black; }
+  .desktop-sidebar, .topbar, .bottom-nav, .demo-banner, .heading-actions, .quick-actions, .toast-region { display: none !important; }
+  .app-shell { padding: 0; }
+  .app-main { max-width: none; padding: 0; }
+  .section-card { border-color: #bbb; background: white; color: black; break-inside: avoid; }
+  .transaction-row { border-color: #ddd; }
+  .transaction-meta, .transaction-amount, .transaction-title { color: black; }
+}
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#view">ข้ามไปเนื้อหา</a>
+  <div id="app"><div class="loading-state" role="status">กำลังเปิด TaeBank…</div></div>
+  <dialog id="modal" class="modal" aria-labelledby="modal-title"></dialog>
+  <div id="toasts" class="toast-region" role="status" aria-live="polite" aria-atomic="false"></div>
+  <noscript><p style="padding:24px;color:#e7c88a;background:#101211">กรุณาเปิด JavaScript เพื่อใช้งาน TaeBank</p></noscript>
+<script>
+/* core.js */
+/* TaeBank ledger: shared by the browser demo and the trusted server. */
+(function (root) {
+  'use strict';
+
+  const TABLES = ['members', 'transactions', 'interestRuns', 'importRuns', 'printJobs', 'requests', 'audit'];
+  const own = (object, key) => Object.prototype.hasOwnProperty.call(object || {}, key);
+  const clone = value => JSON.parse(JSON.stringify(value));
+  function put(object, key, value) {
+    Object.defineProperty(object, key, { value, enumerable: true, configurable: true, writable: true });
+    return value;
+  }
+  function fail(code, message) { const error = new Error(message); error.code = code; throw error; }
+  function requireThat(condition, code, message) { if (!condition) fail(code, message); }
+  function text(value, max, label, optional) {
+    requireThat(value == null || typeof value === 'string', 'INVALID_TEXT', `${label}ต้องเป็นข้อความ`);
+    const result = (value || '').trim();
+    requireThat((optional || result.length > 0) && result.length <= max, 'INVALID_TEXT', `${label}ไม่ถูกต้อง (ไม่เกิน ${max} ตัวอักษร)`);
+    return result;
+  }
+  function accountCode(value) {
+    const code = typeof value === 'number' ? String(value) : value;
+    requireThat(typeof code === 'string' && /^\d{6}$/.test(code), 'INVALID_CODE', 'เลขบัญชีต้องเป็นตัวเลข 6 หลัก');
+    return code;
+  }
+  function satang(value, allowZero) {
+    requireThat(Number.isSafeInteger(value) && (allowZero ? value >= 0 : value > 0), 'INVALID_AMOUNT', allowZero ? 'จำนวนเงินต้องเป็นจำนวนเต็มสตางค์ตั้งแต่ 0 ขึ้นไป' : 'จำนวนเงินต้องเป็นจำนวนเต็มสตางค์และมากกว่า 0');
+    return value;
+  }
+  function safeAdd(a, b) {
+    const result = a + b;
+    requireThat(Number.isSafeInteger(result), 'AMOUNT_OVERFLOW', 'ยอดเงินเกินขอบเขตที่ระบบรองรับ');
+    return result;
+  }
+  function moneyToSatang(raw) {
+    requireThat(typeof raw === 'string' || typeof raw === 'number', 'INVALID_AMOUNT', 'กรุณาระบุจำนวนเงินให้ถูกต้อง');
+    const value = String(raw).trim();
+    requireThat(/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?$/.test(value), 'INVALID_AMOUNT', 'ระบุจำนวนเงินมากกว่า 0 และทศนิยมไม่เกิน 2 ตำแหน่ง');
+    const parts = value.replace(/,/g, '').split('.');
+    const result = BigInt(parts[0]) * 100n + BigInt((parts[1] || '').padEnd(2, '0'));
+    requireThat(result > 0n && result <= BigInt(Number.MAX_SAFE_INTEGER), 'INVALID_AMOUNT', 'จำนวนเงินต้องมากกว่า 0 และอยู่ในขอบเขตที่ระบบรองรับ');
+    return Number(result);
+  }
+  function empty() {
+    const state = { schemaVersion: 2 };
+    TABLES.forEach(table => { state[table] = {}; });
+    return state;
+  }
+  function assertState(state) {
+    requireThat(state && state.schemaVersion === 2, 'INVALID_STATE', 'รูปแบบข้อมูลไม่รองรับ กรุณาสำรองข้อมูลก่อนย้ายระบบ');
+    TABLES.forEach(table => requireThat(state[table] && typeof state[table] === 'object' && !Array.isArray(state[table]), 'INVALID_STATE', `ข้อมูล ${table} ไม่ถูกต้อง`));
+  }
+  function ledgerBalance(state, inputCode, baselineField) {
+    const code = accountCode(inputCode);
+    let total = 0;
+    let originalIds;
+    if (own(state.legacyBaseBalances, code)) {
+      // Runtime-only totals preserve the precision of old ledger amounts. Summing
+      // rounded historical rows can otherwise change the original account total.
+      const baseline = state.legacyBaseBalances[code];
+      requireThat(baseline && Number.isSafeInteger(baseline.amountSatang) && Number.isSafeInteger(baseline.spendableSatang) && Array.isArray(baseline.transactionIds) && baseline.transactionIds.every(id => typeof id === 'string'), 'INVALID_STATE', 'ยอดยกมาจากระบบเดิมไม่ถูกต้อง');
+      total = baseline[baselineField];
+      originalIds = new Set(baseline.transactionIds);
+    }
+    Object.entries(state.transactions || {}).forEach(([transactionId, tx]) => {
+      if (tx.studentCode !== code) return;
+      satang(tx.amountSatang, tx.legacyAmount === true);
+      requireThat(tx.type === 'deposit' || tx.type === 'withdraw', 'INVALID_STATE', 'ประเภทรายการบัญชีไม่ถูกต้อง');
+      if (originalIds && originalIds.has(transactionId)) return;
+      total = safeAdd(total, tx.type === 'deposit' ? tx.amountSatang : -tx.amountSatang);
+    });
+    return total;
+  }
+  function balance(state, inputCode) { return ledgerBalance(state, inputCode, 'amountSatang'); }
+  function availableBalance(state, inputCode) { return ledgerBalance(state, inputCode, 'spendableSatang'); }
+  function stable(value) {
+    if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
+    if (value && typeof value === 'object') return '{' + Object.keys(value).sort().filter(key => value[key] !== undefined).map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}';
+    return JSON.stringify(value);
+  }
+  function nextPosition(page, line, count) {
+    requireThat(Number.isSafeInteger(page) && page >= 1 && Number.isSafeInteger(line) && line >= 1 && line <= 24, 'INVALID_PRINT_POSITION', 'ตำแหน่งสมุดต้องเป็นหน้าตั้งแต่ 1 และบรรทัด 1–24');
+    const offset = safeAdd(line - 1, count);
+    const nextPage = safeAdd(page, Math.floor(offset / 24));
+    return { page: nextPage, line: offset % 24 + 1 };
+  }
+
+  function applyMutation(original, command, context) {
+    assertState(original);
+    context = context || {};
+    requireThat(command && typeof command === 'object' && !Array.isArray(command), 'INVALID_COMMAND', 'คำสั่งไม่ถูกต้อง');
+    const key = text(command.idempotencyKey, 200, 'รหัสคำขอ');
+    const payload = stable(command);
+    if (own(original.requests, key)) {
+      requireThat(original.requests[key].payload === payload, 'IDEMPOTENCY_CONFLICT', 'รหัสคำขอนี้ถูกใช้กับข้อมูลอื่นแล้ว');
+      return { state: clone(original), result: clone(original.requests[key].result) };
+    }
+    const state = clone(original);
+    const now = context.now || new Date().toISOString();
+    requireThat(typeof now === 'string' && /^\d{4}-\d\d-\d\dT/.test(now) && Number.isFinite(Date.parse(now)), 'INVALID_DATE', 'วันเวลารายการไม่ถูกต้อง');
+    const actor = text(context.actor || 'demo', 200, 'ผู้ทำรายการ');
+    let sequence = 0;
+    function id(prefix, table) {
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const raw = context.idFactory ? context.idFactory() : (root.crypto && root.crypto.randomUUID ? root.crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+        const generated = prefix + '_' + String(raw) + '_' + (++sequence);
+        requireThat(generated.length < 250 && !/[.#$\[\]\/]/.test(generated), 'INVALID_ID', 'รหัสรายการไม่ถูกต้อง');
+        if (!own(state[table], generated)) return generated;
+      }
+      fail('ID_COLLISION', 'ไม่สามารถสร้างรหัสรายการ กรุณาลองใหม่');
+    }
+    function member(code, active) {
+      requireThat(own(state.members, code), 'MEMBER_NOT_FOUND', 'ไม่พบบัญชีนี้');
+      const value = state.members[code];
+      requireThat(!active || value.status === 'active', 'MEMBER_ARCHIVED', 'บัญชีนี้ถูกปิดแล้ว');
+      return value;
+    }
+    function append(code, type, amount, note, extra) {
+      satang(amount, false);
+      const before = balance(state, code);
+      if (type === 'withdraw') requireThat(availableBalance(state, code) >= amount, 'INSUFFICIENT_FUNDS', 'ยอดเงินไม่เพียงพอสำหรับรายการนี้');
+      const after = safeAdd(before, type === 'deposit' ? amount : -amount);
+      if (type === 'withdraw') requireThat(after >= 0, 'INSUFFICIENT_FUNDS', 'ยอดเงินไม่เพียงพอสำหรับรายการนี้');
+      const transactionId = id('tx', 'transactions');
+      put(state.transactions, transactionId, Object.assign({ id: transactionId, studentCode: code, type, amountSatang: amount, createdAt: now, note, actor }, extra || {}));
+      return transactionId;
+    }
+    function makeMember(data) {
+      const code = accountCode(data.code);
+      const nick = text(data.nick, 48, 'ชื่อเล่น', true);
+      const name = text(data.name, 120, 'ชื่อสมาชิก');
+      return { code, nick, name, status: 'active', pbPage: 1, pbLine: 1, createdAt: now };
+    }
+    const action = command.action;
+    let result;
+    if (action === 'member.save') {
+      const incoming = makeMember(command);
+      const exists = own(state.members, incoming.code);
+      if (exists) Object.assign(state.members[incoming.code], { name: incoming.name, nick: incoming.nick });
+      else put(state.members, incoming.code, incoming);
+      result = { action, code: incoming.code, created: !exists };
+    } else if (action === 'member.archive') {
+      const code = accountCode(command.code);
+      const existing = member(code, true);
+      requireThat(balance(state, code) === 0, 'NONZERO_BALANCE', 'ปิดบัญชีได้เมื่อยอดเงินคงเหลือเป็น 0 เท่านั้น');
+      existing.status = 'archived';
+      existing.archivedAt = now;
+      result = { action, code };
+    } else if (action === 'transact') {
+      const code = accountCode(command.code);
+      member(code, true);
+      requireThat(command.type === 'deposit' || command.type === 'withdraw', 'INVALID_TYPE', 'เลือกฝากเงินหรือถอนเงิน');
+      const transactionId = append(code, command.type, command.amountSatang, text(command.note, 240, 'หมายเหตุ', true));
+      result = { action, code, transactionId, amountSatang: command.amountSatang, balanceSatang: balance(state, code) };
+    } else if (action === 'reverse') {
+      requireThat(typeof command.transactionId === 'string' && own(state.transactions, command.transactionId), 'TRANSACTION_NOT_FOUND', 'ไม่พบรายการต้นฉบับ');
+      const source = state.transactions[command.transactionId];
+      member(source.studentCode, true);
+      requireThat(!source.reversalOf && !Object.values(state.transactions).some(tx => tx.reversalOf === source.id), 'ALREADY_REVERSED', 'รายการนี้กลับรายการแล้ว หรือเป็นรายการแก้ไข');
+      requireThat(source.legacyFractionalSatang !== true, 'LEGACY_FRACTIONAL_AMOUNT', 'รายการเดิมมีเศษต่ำกว่าสตางค์ จึงไม่สามารถกลับรายการโดยไม่เปลี่ยนยอดเดิมได้');
+      const reason = text(command.reason, 240, 'เหตุผลการกลับรายการ');
+      const transactionId = append(source.studentCode, source.type === 'deposit' ? 'withdraw' : 'deposit', source.amountSatang, reason, { reversalOf: source.id });
+      result = { action, code: source.studentCode, transactionId, reversalOf: source.id, balanceSatang: balance(state, source.studentCode) };
+    } else if (action === 'interest') {
+      requireThat(typeof command.period === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(command.period), 'INVALID_PERIOD', 'รอบดอกเบี้ยต้องเป็น YYYY-MM');
+      requireThat(!own(state.interestRuns, command.period), 'INTEREST_ALREADY_RUN', 'รอบเดือนนี้จ่ายดอกเบี้ยแล้ว');
+      const rateText = String(command.ratePercent == null ? '' : command.ratePercent).trim();
+      requireThat(/^\d+(?:\.\d{1,6})?$/.test(rateText), 'INVALID_RATE', 'อัตราดอกเบี้ยไม่ถูกต้อง (ทศนิยมไม่เกิน 6 ตำแหน่ง)');
+      const rate = Number(rateText);
+      requireThat(Number.isFinite(rate) && rate > 0 && rate <= 100, 'INVALID_RATE', 'อัตราดอกเบี้ยต้องมากกว่า 0 และไม่เกิน 100%');
+      const parts = rateText.split('.');
+      const decimals = (parts[1] || '').length;
+      const numerator = BigInt(parts[0] + (parts[1] || ''));
+      const denominator = 100n * (10n ** BigInt(decimals));
+      const note = text(command.note || `ดอกเบี้ยรอบ ${command.period}`, 240, 'หมายเหตุ', true);
+      const transactionIds = [];
+      let totalSatang = 0;
+      Object.values(state.members).filter(value => value.status === 'active').forEach(value => {
+        const current = balance(state, value.code);
+        if (current <= 0) return;
+        // Exact half-up rounding matches Math.round for positive values, without floating-point drift.
+        const rounded = (BigInt(current) * numerator * 2n + denominator) / (2n * denominator);
+        requireThat(rounded <= BigInt(Number.MAX_SAFE_INTEGER), 'AMOUNT_OVERFLOW', 'ดอกเบี้ยเกินขอบเขตที่ระบบรองรับ');
+        const amount = Number(rounded);
+        if (!amount) return;
+        totalSatang = safeAdd(totalSatang, amount);
+        transactionIds.push(append(value.code, 'deposit', amount, note, { isInterest: true, period: command.period }));
+      });
+      put(state.interestRuns, command.period, { period: command.period, ratePercent: rate, createdAt: now, actor, transactionIds, totalSatang });
+      result = { action, period: command.period, ratePercent: rate, count: transactionIds.length, totalSatang, transactionIds };
+    } else if (action === 'import') {
+      const batchId = text(command.batchId, 200, 'รหัสไฟล์นำเข้า');
+      requireThat(!own(state.importRuns, batchId), 'IMPORT_ALREADY_RUN', 'ไฟล์ชุดนี้ถูกนำเข้าแล้ว');
+      requireThat(Array.isArray(command.rows) && command.rows.length > 0 && command.rows.length <= 10000, 'INVALID_IMPORT', 'ไฟล์นำเข้าต้องมีข้อมูล 1–10,000 บัญชี');
+      const seen = new Set();
+      const incoming = command.rows.map(row => {
+        requireThat(row && typeof row === 'object', 'INVALID_IMPORT', 'ข้อมูลนำเข้าไม่ถูกต้อง');
+        const value = makeMember(row);
+        satang(row.balanceSatang, true);
+        requireThat(!seen.has(value.code), 'DUPLICATE_IMPORT_CODE', `เลขบัญชี ${value.code} ซ้ำในไฟล์`);
+        requireThat(!own(state.members, value.code), 'MEMBER_ALREADY_EXISTS', `เลขบัญชี ${value.code} มีอยู่แล้ว นำเข้าได้เฉพาะบัญชีใหม่`);
+        seen.add(value.code);
+        return { member: value, amount: row.balanceSatang };
+      });
+      const transactionIds = [];
+      let totalSatang = 0;
+      incoming.forEach(row => {
+        put(state.members, row.member.code, row.member);
+        totalSatang = safeAdd(totalSatang, row.amount);
+        if (row.amount > 0) transactionIds.push(append(row.member.code, 'deposit', row.amount, 'ยอดยกมาจากการนำเข้า', { batchId }));
+      });
+      put(state.importRuns, batchId, { batchId, createdAt: now, actor, count: incoming.length, totalSatang, transactionIds });
+      result = { action, batchId, count: incoming.length, totalSatang, transactionIds };
+    } else if (action === 'print.confirm') {
+      const code = accountCode(command.code);
+      const existing = member(code, false);
+      requireThat(Array.isArray(command.transactionIds) && command.transactionIds.length > 0, 'INVALID_PRINT', 'เลือกรายการที่พิมพ์สำเร็จ');
+      requireThat(new Set(command.transactionIds).size === command.transactionIds.length, 'DUPLICATE_PRINT', 'มีรายการพิมพ์ซ้ำ');
+      requireThat(command.page === existing.pbPage && command.line === existing.pbLine, 'STALE_PRINT_POSITION', 'ตำแหน่งสมุดเปลี่ยนไปแล้ว กรุณาเปิดตัวอย่างพิมพ์ใหม่');
+      const sortedPending = Object.values(state.transactions).filter(tx => tx.studentCode === code && !tx.printedAt).sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+      command.transactionIds.forEach((transactionId, index) => {
+        requireThat(typeof transactionId === 'string' && own(state.transactions, transactionId), 'TRANSACTION_NOT_FOUND', 'ไม่พบรายการที่ต้องการพิมพ์');
+        const tx = state.transactions[transactionId];
+        requireThat(tx.studentCode === code, 'INVALID_PRINT_OWNER', 'รายการพิมพ์ไม่ตรงกับบัญชี');
+        requireThat(!tx.printedAt, 'ALREADY_PRINTED', 'รายการนี้ได้รับการยืนยันพิมพ์แล้ว');
+        requireThat(sortedPending[index] && sortedPending[index].id === transactionId, 'PRINT_OUT_OF_ORDER', 'ต้องพิมพ์รายการตามลำดับจากรายการเก่าสุด');
+      });
+      const next = nextPosition(command.page, command.line, command.transactionIds.length);
+      requireThat(command.nextPage == null || command.nextPage === next.page, 'INVALID_PRINT_POSITION', 'หน้าถัดไปไม่ตรงกับจำนวนรายการ');
+      requireThat(command.nextLine == null || command.nextLine === next.line, 'INVALID_PRINT_POSITION', 'บรรทัดถัดไปไม่ตรงกับจำนวนรายการ');
+      const printJobId = id('print', 'printJobs');
+      command.transactionIds.forEach((transactionId, index) => {
+        const position = nextPosition(command.page, command.line, index);
+        Object.assign(state.transactions[transactionId], { printedAt: now, printJobId, printedPage: position.page, printedLine: position.line });
+      });
+      existing.pbPage = next.page;
+      existing.pbLine = next.line;
+      put(state.printJobs, printJobId, { id: printJobId, code, transactionIds: command.transactionIds.slice(), page: command.page, line: command.line, nextPage: next.page, nextLine: next.line, confirmedAt: now, actor });
+      result = { action, code, printJobId, count: command.transactionIds.length, nextPage: next.page, nextLine: next.line };
+    } else fail('INVALID_ACTION', 'ไม่รู้จักคำสั่งนี้');
+
+    const auditId = id('audit', 'audit');
+    put(state.audit, auditId, { id: auditId, action, createdAt: now, actor, requestId: key, result: clone(result) });
+    put(state.requests, key, { payload, result: clone(result), createdAt: now, actor });
+    return { state, result };
+  }
+
+  function createDemo() {
+    const state = empty();
+    const people = [
+      ['100001', 'พิม', 'พิมพ์ชนก แสงสวัสดิ์'],
+      ['100002', 'ต้น', 'ธนกร ศรีสุข'],
+      ['100003', 'มิน', 'มินตรา วัฒนกุล'],
+      ['100004', 'ภูมิ', 'ภูมินทร์ ใจดี'],
+      ['100005', 'น้ำ', 'ณัฐธิดา รุ่งเรือง']
+    ];
+    people.forEach(([code, nick, name]) => { state.members[code] = { code, nick, name, status: 'active', pbPage: 1, pbLine: 1, createdAt: '2026-01-05T02:00:00.000Z' }; });
+    const rows = [
+      ['100001', 'deposit', 12000000, '2026-09-01T02:00:00.000Z', 'เงินออมเริ่มต้น'],
+      ['100001', 'deposit', 500000, '2026-10-03T03:15:00.000Z', 'เงินออมประจำเดือน'],
+      ['100001', 'withdraw', 240000, '2026-10-08T06:30:00.000Z', 'ซื้ออุปกรณ์การเรียน'],
+      ['100001', 'deposit', 85000, '2026-10-12T01:45:00.000Z', 'รายได้เสริม'],
+      ['100001', 'deposit', 500000, '2026-10-21T08:20:00.000Z', 'เงินออมรายสัปดาห์'],
+      ['100001', 'deposit', 75, '2026-10-22T02:00:00.000Z', 'เงินออมเพิ่ม'],
+      ['100002', 'deposit', 8620000, '2026-10-05T02:00:00.000Z', 'เงินออมเริ่มต้น'],
+      ['100002', 'withdraw', 400000, '2026-10-20T05:00:00.000Z', 'ค่าใช้จ่ายส่วนตัว'],
+      ['100003', 'deposit', 4520750, '2026-10-10T03:00:00.000Z', 'เงินออมเริ่มต้น'],
+      ['100004', 'deposit', 3750000, '2026-10-14T04:00:00.000Z', 'เงินออมเริ่มต้น'],
+      ['100005', 'deposit', 2140500, '2026-10-18T02:30:00.000Z', 'เงินออมเริ่มต้น'],
+      ['100005', 'deposit', 200000, '2026-10-21T07:00:00.000Z', 'เงินออมรายสัปดาห์']
+    ];
+    rows.forEach(([studentCode, type, amountSatang, createdAt, note], index) => {
+      const id = 'demo_' + String(index + 1).padStart(3, '0');
+      state.transactions[id] = { id, studentCode, type, amountSatang, createdAt, note, actor: 'บัญชีตัวอย่าง' };
+    });
+    return state;
+  }
+
+  const api = { createDemo, moneyToSatang, balance, availableBalance, applyMutation, nextPosition };
+  root.TaeCore = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* firebase-config.js */
+/* เชื่อมข้อมูลและใช้รหัสเดิมโดยตรง ไม่ต้องนำเข้าหรือย้ายฐานข้อมูล */
+window.TAEBANK_CONFIG = Object.freeze({
+  "mode": "legacy",
+  "firebase": {
+    "apiKey": "AIzaSyAiCtKW-U5QWp3yUsvToJlh2pT7sjiQ4Iw",
+    "authDomain": "taebankwat.firebaseapp.com",
+    "databaseURL": "https://taebankwat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "projectId": "taebankwat",
+    "storageBucket": "taebankwat.firebasestorage.app",
+    "messagingSenderId": "134684838871",
+    "appId": "1:134684838871:web:4b47416599ed4ce95c5992"
+  },
+  "legacy": {
+    "adminPin": "009098",
+    "adminMasterKey": "5255272828842525"
+  },
+  "functionsRegion": "asia-southeast1"
+});
+
+</script>
+<script>
+/* legacy-service.js */
+/* Direct adapter for the original TaeBank database. Loading this file never writes data. */
+(function (global) {
+  'use strict';
+  const TABLES = ['interestRuns', 'importRuns', 'printJobs', 'requests', 'audit'];
+  const subscribers = new Set();
+  const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
+  const own = (object, key) => Object.prototype.hasOwnProperty.call(object || {}, key);
+  const record = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  const put = (object, key, value) => Object.defineProperty(object, key, { value, enumerable: true, writable: true, configurable: true });
+  const error = (code, message) => Object.assign(new Error(message), { code });
+  const safeKey = value => typeof value === 'string' && value.length > 0 && !/[.#$\[\]\/\u0000-\u001f\u007f]/.test(value);
+  const validCode = value => /^\d{6}$/.test(String(value == null ? '' : value));
+  const isoDate = value => {
+    if (value == null || value === '') return '';
+    const date = new Date(value);
+    return Number.isFinite(date.getTime()) ? date.toISOString() : '';
+  };
+  const FALLBACK_DATE = '1970-01-01T00:00:00.000Z';
+  function bangkokPeriod(value) {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok', year: 'numeric', month: '2-digit' }).formatToParts(new Date(value));
+    return parts.find(part => part.type === 'year').value + '-' + parts.find(part => part.type === 'month').value;
+  }
+  function empty() {
+    const value = { schemaVersion: 2, members: {}, transactions: {}, legacyBaseBalances: {} };
+    TABLES.forEach(table => { value[table] = {}; });
+    return value;
+  }
+  // Keep the original decimal amount as an integer plus decimal scale. No historical amount is rewritten.
+  function decimalAmount(value) {
+    const source = String(value == null ? '' : value).trim();
+    if (!/^(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(source) || !Number.isFinite(Number(source)) || Number(source) < 0) {
+      throw error('LEGACY_INVALID_AMOUNT', 'พบจำนวนเงินเดิมที่อ่านไม่ได้ กรุณาตรวจสอบข้อมูลต้นฉบับ');
+    }
+    const [mantissa, power = '0'] = source.toLowerCase().split('e');
+    const parts = mantissa.split('.');
+    let units = BigInt((parts[0] || '0') + (parts[1] || ''));
+    let scale = (parts[1] || '').length - Number(power);
+    if (!Number.isSafeInteger(scale) || Math.abs(scale) > 400) throw error('LEGACY_INVALID_AMOUNT', 'ทศนิยมจำนวนเงินเดิมเกินขอบเขตที่รองรับ');
+    if (scale < 0) { units *= 10n ** BigInt(-scale); scale = 0; }
+    return { units, scale };
+  }
+  function scaleUnits(part, scale) { return part.units * (10n ** BigInt(scale - part.scale)); }
+  function toSatang(units, scale, floorOnly) {
+    const numerator = units * 100n, denominator = 10n ** BigInt(scale);
+    let quotient = numerator / denominator, remainder = numerator % denominator;
+    if (remainder < 0n) { quotient -= 1n; remainder += denominator; }
+    if (!floorOnly && remainder * 2n >= denominator) quotient += 1n;
+    const value = Number(quotient);
+    if (!Number.isSafeInteger(value)) throw error('LEGACY_AMOUNT_OVERFLOW', 'ยอดเงินเดิมเกินขอบเขตที่ระบบรองรับ');
+    return value;
+  }
+  function convertLegacy(input) {
+    const raw = record(input), rawMembers = record(raw.members), rawTransactions = record(raw.transactions);
+    const state = empty(), memberKeys = {}, exactZeroBalances = {}, aliases = new Map(), partsById = new Map();
+    const issues = [], notices = [], meta = record(raw.taebankMeta);
+    TABLES.forEach(table => { state[table] = clone(record(meta[table])); });
+    function alias(key, code) {
+      const text = String(key);
+      if (aliases.has(text) && aliases.get(text) !== code) issues.push('มีเลขบัญชีเดิมอ้างอิงซ้ำกัน');
+      else aliases.set(text, code);
+    }
+    Object.entries(rawMembers).forEach(([key, source]) => {
+      const member = record(source), code = validCode(key) ? String(key) : validCode(member.code) ? String(member.code) : '';
+      if (!code || own(memberKeys, code)) { issues.push('มีบัญชีเดิมที่ไม่มีเลข 6 หลักหรือมีเลขบัญชีซ้ำ'); return; }
+      memberKeys[code] = key; alias(key, code);
+      exactZeroBalances[code] = true;
+      if (member.code != null && member.code !== '') alias(member.code, code);
+      let page = Math.max(1, Math.floor(Number(member.pbPage)) || 1);
+      let line = Math.max(1, Math.floor(Number(member.pbLine)) || 1);
+      if (!Number.isSafeInteger(page) || !Number.isSafeInteger(line)) { page = 1; line = 1; issues.push('มีตำแหน่งสมุดเดิมที่อ่านไม่ได้'); }
+      page += Math.floor((line - 1) / 24); line = (line - 1) % 24 + 1;
+      state.members[code] = { code, nick: String(member.nick || ''), name: String(member.name || member.nick || code),
+        status: member.status === 'archived' ? 'archived' : 'active', pbPage: page, pbLine: line,
+        createdAt: isoDate(member.createdAt) || '' };
+      if (member.archivedAt) state.members[code].archivedAt = isoDate(member.archivedAt) || FALLBACK_DATE;
+    });
+    let fractionalCount = 0, unrelatedCount = 0;
+    Object.entries(rawTransactions).forEach(([id, source]) => {
+      const tx = record(source), sourceCode = String(tx.studentCode == null ? '' : tx.studentCode);
+      const code = aliases.get(sourceCode);
+      // Other applications also use this collection. The old UI never included records without a matching studentCode.
+      if (!sourceCode || !code || !state.members[code]) { unrelatedCount++; return; }
+      if (!['deposit', 'withdraw'].includes(tx.type)) { issues.push('มีรายการบัญชีเดิมที่ประเภทไม่ถูกต้อง'); return; }
+      try {
+        const part = decimalAmount(tx.amount), amountSatang = toSatang(part.units, part.scale);
+        const fractional = (part.units * 100n) % (10n ** BigInt(part.scale)) !== 0n;
+        if (fractional) fractionalCount++;
+        const createdAt = isoDate(tx.date) || isoDate(tx.createdAt) || FALLBACK_DATE;
+        const value = { id, studentCode: code, type: tx.type, amountSatang, createdAt,
+          note: String(tx.note || tx.memo || ''), actor: String(tx.actor || 'ระบบเดิม'), legacyAmount: true };
+        if (fractional) value.legacyFractionalSatang = true;
+        if (tx.isInterest) {
+          value.isInterest = true;
+          const explicitPeriod = /^\d{4}-(0[1-9]|1[0-2])$/.test(tx.period || '');
+          value.period = explicitPeriod ? tx.period : bangkokPeriod(createdAt);
+          if (!explicitPeriod) value.legacyPeriodInferred = true;
+        }
+        for (const field of ['reversalOf', 'batchId', 'printJobId', 'printedPage', 'printedLine']) if (tx[field] != null) value[field] = clone(tx[field]);
+        // The old boolean is authoritative for old records; a deterministic timestamp supports the new UI.
+        if (tx.printed === true || (tx.printed == null && tx.printedAt)) value.printedAt = isoDate(tx.printedAt) || createdAt;
+        put(state.transactions, id, value); partsById.set(id, part);
+      } catch (cause) { issues.push(cause.message); }
+    });
+    const byCode = new Map();
+    Object.values(state.transactions).forEach(tx => {
+      if (!byCode.has(tx.studentCode)) byCode.set(tx.studentCode, []);
+      byCode.get(tx.studentCode).push(tx);
+    });
+    byCode.forEach((transactions, code) => {
+      transactions.sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+      const scale = transactions.reduce((maximum, tx) => Math.max(maximum, partsById.get(tx.id).scale), 0);
+      let units = 0n;
+      transactions.forEach(tx => {
+        const part = partsById.get(tx.id);
+        units += scaleUnits(part, scale) * (tx.type === 'deposit' ? 1n : -1n);
+        tx.legacyRunningBalanceSatang = toSatang(units, scale);
+      });
+      state.legacyBaseBalances[code] = { amountSatang: toSatang(units, scale), spendableSatang: toSatang(units, scale, true), transactionIds: transactions.map(tx => tx.id) };
+      exactZeroBalances[code] = units === 0n;
+      if (state.members[code] && !state.members[code].createdAt) state.members[code].createdAt = transactions[0].createdAt;
+    });
+    Object.values(state.members).forEach(member => { if (!member.createdAt) member.createdAt = FALLBACK_DATE; });
+    // The original app has no interest-run table. Recognize its dated interest entries before allowing a new monthly run.
+    const oldInterest = new Map();
+    Object.values(state.transactions).filter(tx => tx.isInterest).forEach(tx => {
+      if (!oldInterest.has(tx.period)) oldInterest.set(tx.period, []);
+      oldInterest.get(tx.period).push(tx);
+    });
+    oldInterest.forEach((transactions, period) => {
+      if (own(state.interestRuns, period)) return;
+      const scale = transactions.reduce((maximum, tx) => Math.max(maximum, partsById.get(tx.id).scale), 0);
+      const sum = transactions.reduce((total, tx) => total + scaleUnits(partsById.get(tx.id), scale), 0n);
+      put(state.interestRuns, period, { period, legacy: true, inferred: true, periodLabel: 'อ้างอิงวันที่บันทึก', createdAt: transactions.map(tx => tx.createdAt).sort()[0],
+        transactionIds: transactions.map(tx => tx.id), totalSatang: toSatang(sum, scale) });
+    });
+    if (unrelatedCount) notices.push('เก็บข้อมูลรูปแบบอื่น ' + unrelatedCount + ' รายการไว้ตามเดิม โดยไม่นำมารวมยอดบัญชี');
+    if (fractionalCount) notices.push('ข้อมูลเดิมมีทศนิยมต่ำกว่าสตางค์ ยอดรวมคำนวณจากจำนวนเดิมและแสดงผล 2 ตำแหน่ง');
+    if (issues.length) notices.unshift('ข้อมูลเดิมบางรายการอ่านไม่ครบ จึงระงับการบันทึกเพื่อป้องกันยอดผิด (' + issues.length + ' รายการ)');
+    return { state, memberKeys, exactZeroBalances, aliases, issues, warning: notices.join(' · ') };
+  }
+  function mergeMutation(originalRoot, before, after) {
+    const output = clone(record(originalRoot));
+    const members = clone(record(output.members)), transactions = clone(record(output.transactions)), meta = clone(record(output.taebankMeta));
+    Object.entries(after.members).forEach(([code, member]) => {
+      const old = before.state.members[code], key = before.memberKeys[code] || code;
+      if (!old) {
+        put(members, key, { code, nick: member.nick, name: member.name, pbPage: member.pbPage, pbLine: member.pbLine,
+          status: member.status, createdAt: member.createdAt });
+        return;
+      }
+      const changed = {};
+      for (const field of ['name', 'nick', 'status', 'archivedAt', 'pbPage', 'pbLine']) {
+        if (member[field] !== old[field] && member[field] !== undefined) changed[field] = clone(member[field]);
+      }
+      if (Object.keys(changed).length) put(members, key, { ...record(members[key]), ...changed });
+    });
+    Object.entries(after.transactions).forEach(([id, tx]) => {
+      const old = before.state.transactions[id];
+      if (!old) {
+        const value = { studentCode: before.memberKeys[tx.studentCode] || tx.studentCode, type: tx.type,
+          amount: tx.amountSatang / 100, date: tx.createdAt, printed: false, note: tx.note || '', actor: tx.actor || '' };
+        for (const field of ['isInterest', 'period', 'reversalOf', 'batchId']) if (tx[field] != null) value[field] = clone(tx[field]);
+        put(transactions, id, value);
+      } else {
+        const changed = {};
+        for (const field of ['printedAt', 'printJobId', 'printedPage', 'printedLine']) {
+          if (tx[field] !== old[field] && tx[field] !== undefined) changed[field] = clone(tx[field]);
+        }
+        if (Object.keys(changed).length) put(transactions, id, { ...record(transactions[id]), ...changed, printed: true });
+      }
+    });
+    TABLES.forEach(table => {
+      const values = clone(record(meta[table]));
+      Object.entries(after[table] || {}).forEach(([key, value]) => {
+        if (JSON.stringify(value) !== JSON.stringify(before.state[table][key])) put(values, key, clone(value));
+      });
+      // Runtime-inferred old interest runs are never written back by an unrelated operation.
+      if (Object.keys(values).length || own(meta, table)) put(meta, table, values);
+    });
+    if (Object.keys(members).length || own(output, 'members')) output.members = members;
+    if (Object.keys(transactions).length || own(output, 'transactions')) output.transactions = transactions;
+    if (Object.keys(meta).length || own(output, 'taebankMeta')) output.taebankMeta = meta;
+    return output;
+  }
+
+  let config, firebase, database, initPromise, ready = false, session = null;
+  let raw = { members: {}, transactions: {}, taebankMeta: {} }, converted = convertLegacy(raw);
+  let membersReady = false, transactionsReady = false, metadataReady = false;
+  let dataFailed = false, transportConnected = null, queue = Promise.resolve();
+  const readFailures = new Set();
+  let baseWarning = '', metadataWarning = '';
+  function dataReady() { return membersReady && transactionsReady && metadataReady && !dataFailed; }
+  function connection() {
+    if ((global.navigator && global.navigator.onLine === false) || transportConnected === false || dataFailed) return 'offline';
+    if (!dataReady() || transportConnected !== true) return 'loading';
+    return 'online';
+  }
+  function publicState() {
+    if (!session) return empty();
+    if (session.role === 'admin') return converted.state;
+    const code = session.accountCode, state = empty();
+    if (converted.state.members[code]) state.members[code] = converted.state.members[code];
+    state.transactions = Object.fromEntries(Object.entries(converted.state.transactions).filter(([, tx]) => tx.studentCode === code));
+    if (converted.state.legacyBaseBalances[code]) state.legacyBaseBalances[code] = converted.state.legacyBaseBalances[code];
+    return state;
+  }
+  function snapshot() { return clone({ mode: 'legacy', state: publicState(), session, connection: connection(),
+    dataReady: dataReady(), warning: [baseWarning, converted.warning, session && session.role === 'admin' ? metadataWarning : ''].filter(Boolean).join(' · ') }); }
+  function emit() { subscribers.forEach(callback => { try { callback(snapshot()); } catch (cause) { console.error('TaeLegacyService subscriber:', cause); } }); }
+  function refresh() {
+    try {
+      converted = convertLegacy(raw); readFailures.delete('legacy-data'); dataFailed = readFailures.size > 0;
+      if (!dataFailed) baseWarning = '';
+    } catch (cause) {
+      readFailures.add('legacy-data'); dataFailed = true;
+      baseWarning = cause.message || 'ข้อมูลเดิมมีรูปแบบที่อ่านไม่ได้ จึงยังไม่แสดงยอดบัญชี';
+    }
+    emit();
+  }
+  function readFailed(path, cause) {
+    readFailures.add(path); dataFailed = true;
+    baseWarning = /permission/i.test(String(cause && cause.code)) ? 'ฐานข้อมูลเดิมปฏิเสธสิทธิ์อ่านข้อมูล กรุณาตรวจสอบสิทธิ์ของลิงก์เดิม' : 'เชื่อมต่อฐานข้อมูลเดิมไม่สำเร็จ กรุณาลองใหม่';
+    emit();
+  }
+  async function init() {
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+      if (!global.TaeCore) throw error('missing-core', 'โหลด core.js ก่อนเชื่อมต่อข้อมูล');
+      config = global.TAEBANK_CONFIG || {};
+      for (const key of ['apiKey', 'databaseURL', 'projectId', 'appId']) if (!config.firebase || !config.firebase[key]) throw error('setup-required', 'ไม่พบค่าฐานข้อมูลเดิม');
+      const base = 'https://www.gstatic.com/firebasejs/11.0.2/';
+      const [appModule, databaseModule] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-database.js')]);
+      firebase = databaseModule;
+      const existing = appModule.getApps ? appModule.getApps().find(app => app.name === 'taebank-legacy-mobile') : null;
+      const app = existing || appModule.initializeApp(config.firebase, 'taebank-legacy-mobile');
+      database = firebase.getDatabase(app);
+      firebase.onValue(firebase.ref(database, '.info/connected'), value => { transportConnected = value.val() === true; emit(); });
+      firebase.onValue(firebase.ref(database, 'members'), value => {
+        raw.members = value.val() || {}; membersReady = true; readFailures.delete('members'); dataFailed = readFailures.size > 0;
+        if (!dataFailed) baseWarning = ''; refresh();
+      }, cause => readFailed('members', cause));
+      firebase.onValue(firebase.ref(database, 'transactions'), value => {
+        raw.transactions = value.val() || {}; transactionsReady = true; readFailures.delete('transactions'); dataFailed = readFailures.size > 0;
+        if (!dataFailed) baseWarning = ''; refresh();
+      }, cause => readFailed('transactions', cause));
+      firebase.onValue(firebase.ref(database, 'taebankMeta'), value => {
+        raw.taebankMeta = value.val() || {}; metadataReady = true; metadataWarning = ''; refresh();
+      }, () => {
+        raw.taebankMeta = {}; metadataReady = true;
+        metadataWarning = 'อ่านประวัติระบบส่วนเสริมไม่ได้ ยังแสดงข้อมูลบัญชีเดิมได้'; refresh();
+      });
+      for (const event of ['online', 'offline']) global.addEventListener(event, emit);
+      ready = true; emit(); return { mode: 'legacy', session: clone(session) };
+    })().catch(cause => { dataFailed = true; baseWarning = cause.message || 'เชื่อมต่อข้อมูลเดิมไม่สำเร็จ'; emit(); throw cause; });
+    return initPromise;
+  }
+  function awaitData() {
+    if (dataReady()) return Promise.resolve();
+    if (dataFailed) return Promise.reject(error('unavailable', baseWarning));
+    return new Promise((resolve, reject) => {
+      const finish = cause => { global.clearTimeout(timer); subscribers.delete(check); cause ? reject(cause) : resolve(); };
+      const check = () => { if (dataFailed) finish(error('unavailable', baseWarning)); else if (dataReady()) finish(); };
+      const timer = global.setTimeout(() => finish(error('unavailable', 'ยังโหลดข้อมูลเดิมไม่ครบ กรุณารอสักครู่แล้วลองใหม่')), 20000);
+      subscribers.add(check); check();
+    });
+  }
+  async function signIn(credentials) {
+    await init(); await awaitData();
+    credentials = credentials || {};
+    if (credentials.adminPin != null || credentials.adminMasterKey != null) {
+      const legacy = config.legacy || {};
+      if (!legacy.adminPin || !legacy.adminMasterKey || String(credentials.adminPin || '') !== String(legacy.adminPin) || String(credentials.adminMasterKey || '') !== String(legacy.adminMasterKey)) {
+        throw error('invalid-credentials', 'รหัสผู้ดูแลหรือรหัสยืนยันไม่ถูกต้อง');
+      }
+      session = { uid: 'legacy-admin', role: 'admin', accountCode: '', displayName: 'ผู้ดูแลระบบ', email: '' };
+    } else {
+      const input = String(credentials.accountCode || '').trim();
+      if (!/^\d{6}$/.test(input)) throw error('invalid-credentials', 'กรอกเลขบัญชีเดิม 6 หลัก');
+      const code = converted.aliases.get(input);
+      if (!code || !converted.state.members[code]) throw error('member-not-found', 'ไม่พบเลขบัญชีนี้ในข้อมูลเดิม');
+      const member = converted.state.members[code];
+      session = { uid: 'legacy-member-' + code, role: 'member', accountCode: code, displayName: member.nick || member.name, email: '' };
+    }
+    emit(); return clone(session);
+  }
+  async function signOut() { session = null; emit(); }
+  async function mutate(command) {
+    await init(); await awaitData();
+    if (!session || session.role !== 'admin') throw error('permission-denied', 'เฉพาะผู้ดูแลระบบเท่านั้นที่บันทึกรายการได้');
+    if (!command || !safeKey(command.idempotencyKey)) throw error('invalid-argument', 'รหัสคำขอไม่ถูกต้อง กรุณาเปิดรายการใหม่');
+    if (connection() !== 'online') throw error('unavailable', 'ยังไม่เชื่อมต่อฐานข้อมูลเดิม กรุณารอออนไลน์ก่อนบันทึก');
+    const request = clone(command), actor = session.uid;
+    const execute = async () => {
+      if (!session || session.role !== 'admin') throw error('permission-denied', 'กรุณาเข้าสู่ระบบผู้ดูแลอีกครั้ง');
+      let result;
+      const now = new Date().toISOString();
+      try {
+        // Seed a complete root before the transaction's first local callback, and check permission before any write.
+        await firebase.get(firebase.ref(database));
+        const committed = await firebase.runTransaction(firebase.ref(database), serverValue => {
+          const original = record(serverValue), before = convertLegacy(original);
+          if (before.issues.length) throw error('legacy-invalid-data', 'ข้อมูลเดิมบางรายการอ่านไม่ได้ จึงยังไม่บันทึกเพื่อป้องกันยอดผิด');
+          if (request.action === 'member.archive' && before.exactZeroBalances[request.code] === false) {
+            throw error('NONZERO_BALANCE', 'บัญชีเดิมยังมียอดเงินคงเหลือ รวมเศษต่ำกว่าสตางค์ จึงยังปิดบัญชีไม่ได้');
+          }
+          const change = global.TaeCore.applyMutation(before.state, request, { now, actor,
+            idFactory: () => global.crypto && global.crypto.randomUUID ? global.crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2) });
+          result = clone(change.result);
+          return mergeMutation(original, before, change.state);
+        }, { applyLocally: false });
+        if (!committed.committed) throw error('not-committed', 'รายการยังไม่ถูกบันทึก กรุณาลองใหม่');
+        const committedRoot = record(committed.snapshot.val());
+        raw = { members: clone(record(committedRoot.members)), transactions: clone(record(committedRoot.transactions)), taebankMeta: clone(record(committedRoot.taebankMeta)) };
+        refresh(); return result;
+      } catch (cause) {
+        if (/permission/i.test(String(cause && cause.code))) throw error('permission-denied', 'ฐานข้อมูลเดิมไม่อนุญาตให้ตรวจสอบและบันทึกรายการแบบครบชุด รายการยังไม่ถูกบันทึก');
+        throw cause;
+      }
+    };
+    const task = queue.then(execute, execute); queue = task.catch(() => {}); return task;
+  }
+  function exportData() {
+    if (!session || session.role !== 'admin') throw error('permission-denied', 'เฉพาะผู้ดูแลระบบเท่านั้นที่สำรองข้อมูลได้');
+    return JSON.stringify({ exportedAt: new Date().toISOString(), mode: 'legacy', databaseURL: config.firebase.databaseURL,
+      members: clone(raw.members), transactions: clone(raw.transactions), taebankMeta: clone(raw.taebankMeta) }, null, 2);
+  }
+  async function resetDemo() { throw error('permission-denied', 'ข้อมูลนี้เป็นฐานข้อมูลเดิม จึงไม่สามารถรีเซ็ตข้อมูลทดลองได้'); }
+  global.TaeLegacyService = Object.freeze({ init, subscribe(callback) {
+    if (typeof callback !== 'function') throw new TypeError('callback required');
+    subscribers.add(callback); callback(snapshot()); return () => subscribers.delete(callback);
+  }, getSnapshot: snapshot, signIn, signOut, mutate, exportData, resetDemo, get ready() { return ready; } });
+  if (typeof module !== 'undefined' && module.exports) module.exports = { convertLegacy, mergeMutation, decimalAmount, toSatang };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* service.js */
+/* TaeService: browser adapter. Real balances are written only by mutateBank. */
+(function (global) {
+  'use strict';
+  if (global.TAEBANK_CONFIG && global.TAEBANK_CONFIG.mode === 'legacy') {
+    if (!global.TaeLegacyService) throw new Error('โหลด legacy-service.js ก่อน service.js');
+    global.TaeService = global.TaeLegacyService;
+    return;
+  }
+  const STORAGE_KEY = 'taebank.mobile.demo.v3';
+  const SDK_VERSION = '13.1.0';
+  const subscribers = new Set();
+  let config, mode, session = null, state = null, memoryState = null;
+  let ready = false, initPromise, connection = 'loading', warning = '';
+  let storageWorks = true, auth, database, functions, firebase;
+  let detachBank = [], authGeneration = 0, authTask = Promise.resolve();
+  let dataReady = false, transportConnected = null, dataFailed = false, authPending = false;
+  let queue = Promise.resolve();
+
+  const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
+  function emptyState() {
+    return { schemaVersion: 2, members: {}, transactions: {}, interestRuns: {}, importRuns: {}, printJobs: {}, requests: {}, audit: {} };
+  }
+  function normalize(value) {
+    if (!value) return emptyState();
+    return { ...emptyState(), ...value };
+  }
+  function error(code, message) { return Object.assign(new Error(message), { code }); }
+  function publicState() {
+    if (!session) return emptyState();
+    if (session.role === 'admin') return state || emptyState();
+    const code = session.accountCode, source = state || emptyState();
+    const memberState = emptyState();
+    memberState.members = source.members && source.members[code] ? { [code]: source.members[code] } : {};
+    memberState.transactions = Object.fromEntries(Object.entries(source.transactions || {}).filter(([, tx]) => tx.studentCode === code));
+    return memberState;
+  }
+  function snapshot() { return clone({ state: publicState(), session, mode, connection, warning, dataReady }); }
+  function emit() {
+    for (const callback of subscribers) {
+      try { callback(snapshot()); } catch (cause) { console.error('TaeService subscriber:', cause); }
+    }
+  }
+  function readDemo() {
+    if (!storageWorks) return clone(memoryState || global.TaeCore.createDemo());
+    try {
+      const raw = global.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return global.TaeCore.createDemo();
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.members || !parsed.transactions || typeof parsed !== 'object') throw new Error('Invalid demo');
+      return parsed;
+    } catch (_) {
+      storageWorks = false;
+      warning = 'เบราว์เซอร์บันทึกข้อมูลทดลองไม่ได้ ข้อมูลจะอยู่ในหน้านี้จนกว่าจะปิด';
+      return clone(memoryState || global.TaeCore.createDemo());
+    }
+  }
+  function saveDemo(value) {
+    memoryState = clone(value);
+    if (!storageWorks) return;
+    try { global.localStorage.setItem(STORAGE_KEY, JSON.stringify(value)); }
+    catch (_) {
+      storageWorks = false;
+      warning = 'พื้นที่บันทึกข้อมูลทดลองไม่พร้อม ข้อมูลจะอยู่ในหน้านี้จนกว่าจะปิด';
+    }
+  }
+  function stopBank() { detachBank.forEach(detach => detach()); detachBank = []; }
+  function updateConnection() {
+    if (navigator.onLine === false || transportConnected === false || dataFailed) connection = 'offline';
+    else if ((authPending || session) && (!dataReady || transportConnected !== true)) connection = 'loading';
+    else connection = 'online';
+  }
+  function permissionError(cause) {
+    warning = cause && cause.code === 'PERMISSION_DENIED' ? 'สิทธิ์อ่านข้อมูลถูกปฏิเสธ โปรดตรวจสอบบัญชีและ Database Rules' : 'เชื่อมต่อข้อมูลไม่สำเร็จ กรุณาลองใหม่';
+    dataFailed = true; dataReady = false; updateConnection(); emit();
+  }
+  async function acceptUser(user) {
+    const generation = ++authGeneration;
+    stopBank(); session = null; state = emptyState(); warning = '';
+    dataReady = false; dataFailed = false; authPending = !!user;
+    updateConnection(); emit();
+    if (!user) return;
+    try {
+      const token = await firebase.getIdTokenResult(user);
+      if (generation !== authGeneration) return;
+      const isAdmin = token.claims.admin === true;
+      const code = String(token.claims.accountCode || '');
+      if (!isAdmin && !/^\d{6}$/.test(code)) {
+        await firebase.signOut(auth);
+        throw error('permission-denied', 'บัญชีนี้ยังไม่ได้รับสิทธิ์ โปรดให้ผู้ดูแลผูกเลขสมาชิก');
+      }
+      session = { uid: user.uid, role: isAdmin ? 'admin' : 'member', accountCode: isAdmin ? '' : code,
+        email: user.email || '', displayName: user.displayName || (isAdmin ? 'ผู้ดูแลระบบ' : 'สมาชิก') };
+      authPending = false;
+      const onReadError = cause => { if (generation === authGeneration) permissionError(cause); };
+      if (isAdmin) {
+        detachBank.push(firebase.onValue(firebase.ref(database, 'bank'), data => {
+          if (generation !== authGeneration) return;
+          state = normalize(data.val()); dataReady = true; dataFailed = false;
+          updateConnection(); warning = ''; emit();
+        }, onReadError));
+      } else {
+        let memberReady = false, transactionsReady = false;
+        const update = () => {
+          if (generation !== authGeneration) return;
+          dataReady = memberReady && transactionsReady && !dataFailed; updateConnection(); emit();
+        };
+        detachBank.push(firebase.onValue(firebase.ref(database, 'bank/members/' + code), data => {
+          if (generation !== authGeneration) return;
+          state.members = data.exists() ? { [code]: data.val() } : {}; memberReady = true; update();
+        }, onReadError));
+        const transactions = firebase.query(firebase.ref(database, 'bank/transactions'), firebase.orderByChild('studentCode'), firebase.equalTo(code));
+        detachBank.push(firebase.onValue(transactions, data => {
+          if (generation !== authGeneration) return;
+          state.transactions = data.val() || {}; transactionsReady = true; update();
+        }, onReadError));
+      }
+      updateConnection(); emit();
+    } catch (cause) {
+      if (generation !== authGeneration) return;
+      authPending = false; dataFailed = true; dataReady = false;
+      warning = cause.message || 'ตรวจสอบสิทธิ์ไม่สำเร็จ'; updateConnection(); emit();
+      throw cause;
+    }
+  }
+  async function initFirebase() {
+    for (const key of ['apiKey', 'authDomain', 'databaseURL', 'projectId', 'appId']) {
+      if (!config.firebase || !config.firebase[key]) throw error('setup-required', 'ตั้งค่า Firebase ไม่ครบ อ่าน SETUP-FIREBASE.md ก่อนเปิดใช้ข้อมูลจริง');
+    }
+    const base = 'https://www.gstatic.com/firebasejs/' + SDK_VERSION + '/';
+    const [appModule, authModule, databaseModule, functionsModule] = await Promise.all([
+      import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-database.js'), import(base + 'firebase-functions.js')
+    ]);
+    firebase = { ...authModule, ...databaseModule, ...functionsModule };
+    const app = appModule.initializeApp(config.firebase);
+    auth = firebase.getAuth(app); database = firebase.getDatabase(app);
+    functions = firebase.getFunctions(app, config.functionsRegion || 'asia-southeast1');
+    await firebase.setPersistence(auth, firebase.browserSessionPersistence);
+    // This listener describes transport only. It must never mark an incomplete account snapshot ready.
+    firebase.onValue(firebase.ref(database, '.info/connected'), value => {
+      transportConnected = value.val() === true; updateConnection(); emit();
+    });
+    for (const event of ['online', 'offline']) global.addEventListener(event, () => { updateConnection(); emit(); });
+    // Read the first auth state before init resolves. Every token change also refreshes claims.
+    await new Promise((resolve, reject) => {
+      let first = true;
+      firebase.onIdTokenChanged(auth, user => {
+        authTask = acceptUser(user);
+        authTask.then(() => { if (first) { first = false; resolve(); } }, cause => {
+          if (first) { first = false; reject(cause); }
+        });
+      }, reject);
+    });
+  }
+  async function init() {
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+      if (!global.TaeCore) throw error('missing-core', 'โหลด core.js ก่อน service.js');
+      config = global.TAEBANK_CONFIG || { mode: 'demo' };
+      mode = config.mode === 'firebase' ? 'firebase' : 'demo';
+      state = emptyState(); emit();
+      if (mode === 'demo') {
+        state = readDemo(); saveDemo(state); dataReady = true; connection = 'online';
+        global.addEventListener('storage', event => {
+          if (event.key === STORAGE_KEY) { state = readDemo(); emit(); }
+        });
+      } else await initFirebase();
+      ready = true; emit(); return { mode, session: clone(session) };
+    })().catch(cause => { warning = cause.message; connection = 'offline'; emit(); throw cause; });
+    return initPromise;
+  }
+  function waitForUser(uid) {
+    if (session && session.uid === uid) return Promise.resolve();
+    // Observe the matching accepted UID instead of assuming SDK promise/listener ordering.
+    return new Promise((resolve, reject) => {
+      const finish = cause => {
+        global.clearTimeout(timer); subscribers.delete(check);
+        if (cause) reject(cause); else resolve();
+      };
+      const check = () => {
+        if (session && session.uid === uid) finish();
+        else if (warning) finish(error('permission-denied', warning));
+        else if (!auth.currentUser || auth.currentUser.uid !== uid) finish(error('permission-denied', 'ยังไม่ได้รับสิทธิ์บัญชี หรือการเข้าสู่ระบบถูกยกเลิก'));
+      };
+      const timer = global.setTimeout(() => finish(error('unavailable', 'ตรวจสอบสิทธิ์นานกว่าปกติ กรุณาลองเข้าสู่ระบบใหม่')), 20000);
+      subscribers.add(check); check();
+    });
+  }
+  async function signIn(credentials) {
+    await init();
+    const { email, password, demoRole } = credentials || {};
+    if (mode === 'demo') {
+      if (!['member', 'admin'].includes(demoRole)) throw error('demo-only', 'กดปุ่มทดลองสมาชิกหรือทดลองผู้ดูแล เพื่อใช้ข้อมูลสมมติ');
+      session = { uid: 'demo-' + demoRole, role: demoRole, accountCode: demoRole === 'member' ? '100001' : '',
+        email: '', displayName: demoRole === 'member' ? 'สมาชิกตัวอย่าง' : 'ผู้ดูแลตัวอย่าง' };
+      state = readDemo(); emit(); return clone(session);
+    }
+    if (demoRole) throw error('production-mode', 'ระบบข้อมูลจริงไม่รองรับการทดลองเข้าสู่ระบบ');
+    if (!email || !password) throw error('invalid-credentials', 'กรอกอีเมลและรหัสผ่าน');
+    try {
+      const credential = await firebase.signInWithEmailAndPassword(auth, email.trim(), password);
+      await waitForUser(credential.user.uid);
+      if (!session) throw error('permission-denied', 'ยังไม่ได้รับสิทธิ์บัญชี');
+      return clone(session);
+    } catch (cause) {
+      const known = ['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found', 'auth/invalid-email'];
+      if (known.includes(cause.code)) throw error(cause.code, 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+      if (cause.code === 'auth/too-many-requests') throw error(cause.code, 'ลองเข้าสู่ระบบหลายครั้ง กรุณารอสักครู่');
+      throw cause;
+    }
+  }
+  async function signOut() {
+    if (mode === 'firebase' && auth) await firebase.signOut(auth);
+    stopBank(); ++authGeneration; session = null;
+    if (mode === 'firebase') { state = emptyState(); dataReady = false; authPending = false; dataFailed = false; updateConnection(); }
+    emit();
+  }
+  async function mutate(command) {
+    await init();
+    if (!session || session.role !== 'admin') throw error('permission-denied', 'เฉพาะผู้ดูแลระบบเท่านั้นที่บันทึกรายการได้');
+    if (!command || !command.idempotencyKey) throw error('invalid-argument', 'รายการต้องมีรหัสคำสั่งเพื่อป้องกันการบันทึกซ้ำ');
+    if (mode === 'firebase') {
+      if (connection !== 'online') throw error('unavailable', 'ยังไม่เชื่อมต่อระบบ กรุณารอออนไลน์ก่อนบันทึก');
+      const callable = firebase.httpsCallable(functions, 'mutateBank');
+      const response = await callable(command);
+      return response.data;
+    }
+    const execute = async () => {
+      if (!session || session.role !== 'admin') throw error('permission-denied', 'กรุณาเข้าสู่ระบบผู้ดูแลอีกครั้ง');
+      const current = readDemo();
+      const change = global.TaeCore.applyMutation(current, clone(command), {
+        now: new Date().toISOString(), actor: session.uid,
+        idFactory: () => global.crypto && global.crypto.randomUUID ? global.crypto.randomUUID() : 'demo-' + Date.now() + '-' + Math.random().toString(36).slice(2)
+      });
+      saveDemo(change.state); state = change.state; emit(); return clone(change.result);
+    };
+    const run = () => global.navigator && global.navigator.locks ? global.navigator.locks.request(STORAGE_KEY, execute) : execute();
+    const task = queue.then(run, run); queue = task.catch(() => {}); return task;
+  }
+  async function resetDemo() {
+    await init();
+    if (mode !== 'demo') throw error('permission-denied', 'รีเซ็ตได้เฉพาะข้อมูลทดลอง');
+    const execute = () => { state = global.TaeCore.createDemo(); saveDemo(state); session = null; emit(); };
+    const run = () => global.navigator && global.navigator.locks ? global.navigator.locks.request(STORAGE_KEY, execute) : execute();
+    const task = queue.then(run, run); queue = task.catch(() => {}); return task;
+  }
+  function exportData() {
+    if (!session || session.role !== 'admin') throw error('permission-denied', 'เฉพาะผู้ดูแลระบบเท่านั้นที่สำรองข้อมูลได้');
+    return JSON.stringify({ exportedAt: new Date().toISOString(), mode, schema: 2, bank: clone(state) }, null, 2);
+  }
+  global.TaeService = Object.freeze({ init, subscribe(callback) {
+    if (typeof callback !== 'function') throw new TypeError('callback required');
+    subscribers.add(callback); callback(snapshot()); return () => subscribers.delete(callback);
+  }, getSnapshot: snapshot, signIn, signOut, mutate, exportData, resetDemo, get ready() { return ready; } });
+})(window);
+
+</script>
+<script>
+/* app.js */
+/* TaeBank Mobile · UI has no direct permission to write a production database. */
+(() => {
+  'use strict';
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = value => new Intl.NumberFormat('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}).format((Number(value) || 0) / 100);
+  const compact = value => new Intl.NumberFormat('en-US', {notation:'compact',maximumFractionDigits:1}).format((Number(value) || 0) / 100);
+  const dateFmt = (value, options = {}) => new Date(value).toLocaleDateString('th-TH', {timeZone:'Asia/Bangkok',day:'numeric',month:'short',...options});
+  const timeFmt = value => new Date(value).toLocaleTimeString('th-TH', {timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit'});
+  const dayKey = value => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));
+  const icons = {
+    mark:'<path d="M5 6h14M12 6v14M7 11h10"/>',
+    home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+    activity:'<path d="M4 6h16M4 12h16M4 18h10"/><path d="m18 16 3 3-3 3"/>',
+    chart:'<path d="M4 4v16h16M8 15v-4M13 15V7M18 15v-6"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
+    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M20 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    tools:'<path d="m14 6 4 4M3 21l7-7M14 3a6 6 0 0 0-7 7l-5 5a3 3 0 0 0 4 4l5-5a6 6 0 0 0 7-7l-4 4-4-4z"/>',
+    down:'<path d="M12 4v16m-6-6 6 6 6-6"/>',
+    up:'<path d="M12 20V4m-6 6 6-6 6 6"/>',
+    arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
+    chevron:'<path d="m9 5 7 7-7 7"/>',
+    eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    eyeOff:'<path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M6 6C3.5 8 2 12 2 12s3 7 10 7c2 0 3.8-.6 5.2-1.5M10 5.2c.6-.1 1.3-.2 2-.2 7 0 10 7 10 7a18 18 0 0 1-3 4"/>',
+    copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+    shield:'<path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6z"/><path d="m8 12 3 3 5-6"/>',
+    logout:'<path d="M9 4H4v16h5M10 12h11m-4-4 4 4-4 4"/>',
+    search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+    upload:'<path d="M12 16V3m-5 5 5-5 5 5M4 17v4h16v-4"/>',
+    print:'<path d="M6 9V3h12v6M6 17H3v-8h18v8h-3"/><path d="M6 14h12v7H6zM17 11h1"/>',
+    close:'<path d="m6 6 12 12M6 18 18 6"/>',
+    check:'<path d="m5 12 4 4L19 6"/>',
+    lock:'<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V6a4 4 0 0 1 8 0v4M12 14v3"/>',
+    percent:'<path d="m5 19 14-14"/><circle cx="6.5" cy="6.5" r="3"/><circle cx="17.5" cy="17.5" r="3"/>',
+    book:'<path d="M4 4h13a3 3 0 0 1 3 3v14H6a3 3 0 0 1-3-3V6a2 2 0 0 1 1-2zM3 17h17M8 7h7M8 11h5"/>',
+    edit:'<path d="m16 3 5 5-12 12-6 1 1-6zM13 6l5 5"/>',
+    undo:'<path d="M3 10h11a6 6 0 0 1 0 12M3 10l6-6M3 10l6 6"/>',
+    moon:'<path d="M21 13a9 9 0 0 1-10-10 9 9 0 1 0 10 10z"/>',
+    wallet:'<path d="M20 8V5H5a3 3 0 0 0 0 6h16v10H5a3 3 0 0 1-3-3V8M21 13h-5v5h5"/>',
+    info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
+    bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
+    refresh:'<path d="M20 7V2l-3 3a8 8 0 1 0 3 9M15 7h5"/>',
+    sparkle:'<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/>',
+    file:'<path d="M14 2H4v20h16V8zM14 2v6h6M8 12h8M8 16h6"/>'
+  };
+  const icon = (name, classes = '') => `<svg class="icon ${classes}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.info}</svg>`;
+  const brand = () => `<span class="brand-mark">${icon('mark')}</span><span class="brand-word">taebank<span class="brand-dot">.</span></span>`;
+  let snapshot = {state:null,session:null,mode:'demo',connection:'loading'};
+  let activeView = 'home';
+  let historyFilter = 'all', historySearch = '', memberSearch = '', chartDays = 7;
+  let showBalance = true, modalCleanup = null, submitting = false, latestWarning = '';
+  let loginRole = 'member';
+  const app = $('#app'), modal = $('#modal');
+  const session = () => snapshot.session;
+  const isAdmin = () => session()?.role === 'admin';
+  const allMembers = () => Object.values(snapshot.state?.members || {});
+  const members = () => allMembers().filter(m => m.status !== 'archived');
+  const transactions = (code = null) => Object.values(snapshot.state?.transactions || {}).filter(t => !code || t.studentCode === code).sort((a,b) => (Date.parse(b.createdAt) - Date.parse(a.createdAt)) || String(b.id).localeCompare(String(a.id)));
+  const ownMember = () => snapshot.state?.members?.[session()?.accountCode];
+  const balance = code => window.TaeCore.balance(snapshot.state, code);
+  const totalBalance = () => allMembers().reduce((sum,m) => sum + balance(m.code), 0);
+  const txTitle = t => t.reversalOf ? 'รายการกลับบัญชี' : t.isInterest ? 'รับดอกเบี้ย' : t.type === 'deposit' ? 'ฝากเงินเข้าบัญชี' : 'ถอนเงินจากบัญชี';
+  const txAmount = t => `${t.type === 'deposit' ? '+' : '−'}${fmt(t.amountSatang)}`;
+  const accountFmt = code => String(code || '').replace(/^(\d{3})(\d{3})$/, '$1 $2');
+  const requestKey = prefix => `${prefix}-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
+  const nowMonth = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit'}).format(new Date());
+
+  function toast(message, type = 'success') {
+    const el = document.createElement('div'); el.className = `toast ${type}`;
+    el.innerHTML = `${icon(type === 'error' ? 'info' : 'check')}<span>${esc(message)}</span>`;
+    $('#toasts').appendChild(el); setTimeout(() => el.remove(), 5200);
+  }
+  function friendly(error) { return String(error?.message || 'ทำรายการไม่สำเร็จ กรุณาลองใหม่').replace(/^Firebase:\s*/,''); }
+  function download(filename, data, type = 'application/json;charset=utf-8') {
+    const url = URL.createObjectURL(new Blob([data], {type}));
+    const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  function setView(view) {
+    activeView = view; render(); window.scrollTo({top:0,behavior:'instant'}); $('#view')?.focus({preventScroll:true});
+  }
+  function navItems() {
+    return isAdmin() ? [['home','home','ภาพรวม'],['members','users','สมาชิก'],['history','activity','รายการ'],['tools','tools','เครื่องมือ']] : [['home','home','ภาพรวม'],['history','activity','รายการ'],['insights','chart','สรุป'],['profile','user','บัญชี']];
+  }
+  function navMarkup() {
+    return navItems().map(([view, name, title]) => `<button class="nav-item ${activeView === view ? 'active' : ''}" data-action="nav" data-view="${view}" ${activeView === view ? 'aria-current="page"' : ''}>${icon(name,'nav-icon')}<span>${title}</span></button>`).join('');
+  }
+  function render() {
+    if (!session()) { renderLogin(); return; }
+    const admin = isAdmin();
+    app.innerHTML = `<div class="app-shell">
+      <aside class="desktop-sidebar"><a class="brand-lockup" href="#" data-action="nav" data-view="home" aria-label="TaeBank หน้าหลัก">${brand()}</a><div class="sidebar-caption">${admin ? 'ADMIN WORKSPACE' : 'YOUR PERSONAL SPACE'}</div><nav aria-label="เมนูหลัก">${navMarkup()}</nav><div class="sidebar-footer"><div class="sidebar-note">${icon('shield')}<span>ทุกยอดเงิน<br><strong>ชัดเจนกว่าเดิม</strong></span></div><button class="button button-ghost button-wide" data-action="logout">${icon('logout')} ออกจากระบบ</button></div></aside>
+      <div class="app-main"><header class="topbar"><a class="brand-lockup" href="#" data-action="nav" data-view="home" aria-label="TaeBank หน้าหลัก">${brand()}</a><span class="desktop-only eyebrow">${admin ? 'TAEBANK / ADMIN WORKSPACE' : 'TAEBANK / PERSONAL ACCOUNT'}</span><div class="topbar-actions"><span class="inline-status ${snapshot.connection === 'offline' ? 'offline' : ''}"><i></i><span>${snapshot.mode === 'demo' ? 'DEMO' : snapshot.connection === 'offline' ? 'ออฟไลน์' : snapshot.connection === 'loading' ? 'กำลังเชื่อมต่อ' : 'เชื่อมต่อแล้ว'}</span></span><button class="avatar" data-action="${admin ? 'about' : 'nav'}" ${admin ? '' : 'data-view="profile"'} aria-label="${admin ? 'ข้อมูลผู้ดูแลระบบ' : 'ข้อมูลบัญชี'}">${admin ? 'AD' : esc((ownMember()?.nick || 'T').slice(0,2))}</button></div></header>
+      <main id="view" tabindex="-1">${renderView()}</main><footer class="app-footer">TaeBank <span>PRIVATE ACCOUNT · MADE FOR YOU</span></footer></div>
+      <nav class="bottom-nav" aria-label="เมนูหลักบนมือถือ">${navMarkup()}</nav></div>`;
+  }
+  function renderLogin() {
+    const demo = snapshot.mode === 'demo', legacy = snapshot.mode === 'legacy';
+    let accessForm;
+    if (demo) accessForm = `<div class="demo-options"><button class="button button-primary button-wide" data-action="demo-member">เข้าสู่บัญชีตัวอย่าง ${icon('arrow')}</button><button class="button button-secondary button-wide" data-action="demo-admin">${icon('users')} ทดลองหน้าผู้ดูแล</button></div><div class="notice">${icon('info')}<p>ข้อมูลทั้งหมดเป็นข้อมูลจำลอง บันทึกเฉพาะในเบราว์เซอร์นี้</p></div>`;
+    else if (legacy) accessForm = `<div class="segmented login-role-tabs"><button class="segment ${loginRole==='member'?'active':''}" data-action="login-role" data-role="member" aria-pressed="${loginRole==='member'}">สมาชิก</button><button class="segment ${loginRole==='admin'?'active':''}" data-action="login-role" data-role="admin" aria-pressed="${loginRole==='admin'}">ผู้ดูแล</button></div><form id="login-form" class="login-form form-stack">${loginRole==='member'?`<div class="field"><label for="login-account">เลขบัญชี / รหัสเดิม 6 หลัก</label><input id="login-account" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="••••••" autocomplete="off" required><span class="field-hint">ใช้รหัสเดียวกับเว็บเดิม</span></div>`:`<div class="field"><label for="login-admin-pin">รหัสผู้ดูแลเดิม</label><input id="login-admin-pin" type="password" inputmode="numeric" maxlength="6" minlength="6" placeholder="รหัสผู้ดูแล 6 หลัก" autocomplete="off" required></div><div class="field"><label for="login-master-key">Master Key เดิม</label><input id="login-master-key" type="password" placeholder="Master Key ของผู้ดูแล" autocomplete="off" required></div>`}<p id="login-error" class="form-error" role="alert"></p><button class="button button-primary button-wide" type="submit">เข้าสู่ระบบ ${icon('arrow')}</button></form>`;
+    else accessForm = `<form id="login-form" class="login-form form-stack"><div class="field"><label for="login-email">อีเมล</label><input id="login-email" name="email" type="email" placeholder="you@example.com" autocomplete="username" required></div><div class="field"><label for="login-password">รหัสผ่าน</label><input id="login-password" name="password" type="password" placeholder="รหัสผ่านของคุณ" autocomplete="current-password" required minlength="6"></div><p id="login-error" class="form-error" role="alert"></p><button class="button button-primary button-wide" type="submit">เข้าสู่ระบบ ${icon('arrow')}</button></form>`;
+    app.innerHTML = `<main id="view" class="login-shell" tabindex="-1"><header class="login-top"><a class="brand-lockup login-brand" href="#" aria-label="TaeBank">${brand()}</a><span class="badge badge-gold">${demo?'รุ่นตัวอย่าง':legacy?'บัญชีเดิม · ดีไซน์ใหม่':'PRIVATE ACCOUNT'}</span></header><div class="login-content"><section class="login-story"><p class="login-kicker"><span></span> A LITTLE MORE CLARITY.</p><h1 class="login-title">ทุกยอดเงิน<br>ชัดเจน<span>กว่าเดิม.</span></h1><p class="login-subtitle">${legacy?'บัญชีเดิม ประวัติเดิม ในพื้นที่ใหม่ของคุณ<br>เชื่อมต่อข้อมูลเดิมโดยตรง ไม่ต้องนำเข้าใหม่':'พื้นที่เล็ก ๆ สำหรับความมั่นใจที่มากขึ้น<br>ดูยอดเงิน ติดตามรายการ และจัดการบัญชีในที่เดียว'}</p><div class="login-card-preview"><div class="balance-card login-sample-card"><div class="card-decoration"></div><div class="card-top"><span class="card-brand">taebank.</span><span class="card-badge">PRIVATE MEMBER</span></div><div><p class="card-amount-label">YOUR EVERYDAY CONFIDENCE</p><div class="balance-amount"><span class="balance-currency">฿</span>${demo?'128,450<span class="amount-decimal">.75</span>':'•••,•••<span class="amount-decimal">.••</span>'}</div></div><div class="card-bottom"><span class="account-number">${demo?'100 &nbsp; 001':'••• &nbsp; •••'}</span><span class="card-chip">${icon('sparkle')}</span></div></div><span class="floating-note">${icon('check')} ${legacy?'ข้อมูลเดิม พร้อมใช้งานในดีไซน์ใหม่':'ทุกการเคลื่อนไหว ดูได้ในมือคุณ'}</span></div></section><section class="login-panel" aria-labelledby="login-heading"><div class="login-panel-icon">${icon('lock')}</div><p class="eyebrow">WELCOME TO YOUR SPACE</p><h2 id="login-heading">ยินดีต้อนรับกลับ</h2><p class="login-panel-subtitle">${demo?'ลองสัมผัส TaeBank โฉมใหม่ได้ทันที':legacy?'เข้าสู่ระบบด้วยรหัสเดิมของคุณ':'เข้าสู่ระบบเพื่อดูบัญชีของคุณ'}</p>${accessForm}<div class="login-trust">${icon(legacy?'refresh':'shield')}<span>${demo?'ยังไม่เชื่อมต่อฐานข้อมูลจริง':legacy?(snapshot.dataReady?'เชื่อมต่อฐานข้อมูลเดิมแล้ว':snapshot.connection==='offline'?'ยังเชื่อมต่อฐานข้อมูลเดิมไม่ได้':'กำลังอ่านข้อมูลเดิม…'):'บัญชีของคุณ เข้าถึงได้ตามสิทธิ์ของคุณ'}</span></div>${legacy&&snapshot.warning?`<p class="form-error">${esc(snapshot.warning)}</p>`:''}</section></div><footer class="login-footer"><span>© ${new Date().getFullYear()} TaeBank</span><span>DESIGNED AROUND YOU.</span></footer></main>`;
+  }
+  function renderView() {
+    if (!snapshot.state) return '<div class="loading-state" role="status">กำลังโหลดข้อมูลบัญชี…</div>';
+    if (snapshot.mode !== 'demo' && (snapshot.connection === 'loading' || snapshot.dataReady === false)) return '<div class="loading-state" role="status">กำลังโหลดข้อมูลบัญชีให้ครบถ้วน…</div>';
+    if (!isAdmin() && !ownMember()) return `<div class="empty-state">${icon('lock')}<h2>ยังไม่ได้เชื่อมบัญชีสมาชิก</h2><p>กรุณาให้ผู้ดูแลเชื่อมบัญชีกับอีเมลนี้ก่อนเริ่มใช้งาน</p><button class="button button-secondary" data-action="logout">ออกจากระบบ</button></div>`;
+    if (activeView === 'history') return historyView();
+    if (activeView === 'members' && isAdmin()) return membersView();
+    if (activeView === 'tools' && isAdmin()) return toolsView();
+    if (activeView === 'insights' && !isAdmin()) return insightsView();
+    if (activeView === 'profile' && !isAdmin()) return profileView();
+    return isAdmin() ? adminHome() : memberHome();
+  }
+  function heading(eyebrow, title, extra = '') {
+    return `<div class="page-heading"><div><p class="eyebrow">${eyebrow}</p><h1>${title}</h1></div>${extra ? `<div class="heading-actions">${extra}</div>` : ''}</div>`;
+  }
+  function demoBanner() { return snapshot.mode === 'demo' ? `<div class="demo-banner">${icon('info')}<span>พื้นที่ทดลอง · ข้อมูลจำลอง ไม่มีการเคลื่อนย้ายเงินจริง</span></div>` : ''; }
+  function accountCard(m) {
+    const amount = showBalance ? fmt(balance(m.code)) : '•••,•••';
+    return `<div class="balance-card"><div class="card-decoration"></div><div class="card-top"><span class="card-brand">taebank.</span><span class="card-badge">PRIVATE ACCOUNT ${icon('sparkle')}</span></div><div class="card-balance"><div class="card-amount-label">ยอดเงินคงเหลือ <button class="balance-toggle" data-action="toggle-balance" aria-label="${showBalance ? 'ซ่อนยอดเงิน' : 'แสดงยอดเงิน'}" aria-pressed="${!showBalance}">${icon(showBalance ? 'eye' : 'eyeOff')}</button></div><div class="balance-amount ${showBalance ? '' : 'balance-hidden'}"><span class="balance-currency">฿</span>${esc(amount.split('.')[0])}${showBalance ? `<span class="amount-decimal">.${esc(amount.split('.')[1])}</span>` : ''}</div></div><div class="card-bottom"><div><p class="account-number">${esc(accountFmt(m.code))}<button class="copy-account" data-action="copy" data-code="${esc(m.code)}" aria-label="คัดลอกเลขบัญชี">${icon('copy')}</button></p><p class="card-owner">${esc(m.name || m.nick)}</p></div><span class="card-chip">${icon('mark')}</span></div></div><p class="balance-caption">${icon('shield')} บัญชีส่วนตัวของคุณ <span>THB · บาท</span></p>`;
+  }
+  function quick(action, name, label, extra = '') { return `<button class="quick-action" data-action="${action}" ${extra}><span class="quick-icon">${icon(name)}</span><span class="quick-label">${label}</span></button>`; }
+  function memberHome() {
+    const m = ownMember();
+    return `${demoBanner()}${heading('YOUR MONEY, AT A GLANCE',`สวัสดี, ${esc(m.nick || 'สมาชิก')}<span class="greeting-dot">.</span>`,`<span class="today-label">${dateFmt(new Date(),{year:'numeric'})}</span>`)}<div class="dashboard-grid"><div class="main-column">${accountCard(m)}<div class="quick-actions">${quick('nav','activity','รายการทั้งหมด','data-view="history"')}${quick('statement','file','ใบแจ้งยอด',`data-code="${m.code}"`)}${quick('copy','copy','เลขบัญชี',`data-code="${m.code}"`)}${quick('nav','user','ข้อมูลบัญชี','data-view="profile"')}</div><section class="section-card"><div class="section-heading"><div><p class="eyebrow">THE LATEST MOVES</p><h2 class="section-title">รายการล่าสุด</h2></div><button class="text-btn" data-action="nav" data-view="history">ดูทั้งหมด ${icon('arrow')}</button></div><div class="transaction-list">${txRows(transactions(m.code).slice(0,5))}</div></section></div><div class="side-column">${insightCard(m.code)}<section class="membership-note"><div class="membership-emblem">${icon('sparkle')}</div><p class="eyebrow">A CLEARER PICTURE</p><h2>ความสบายใจ<br>เริ่มจากความชัดเจน</h2><p>ตรวจสอบยอดและรายการของคุณ<br>ได้ทุกครั้งที่ต้องการ</p><button class="text-btn" data-action="nav" data-view="insights">สำรวจสรุปบัญชี ${icon('arrow')}</button></section></div></div>`;
+  }
+  function txRows(txs, options = {}) {
+    if (!txs.length) return `<div class="empty-state">${icon('activity')}<h3>ยังไม่มีรายการ</h3><p>${options.filtered ? 'ลองเปลี่ยนคำค้นหาหรือประเภทของรายการ' : 'เมื่อมีความเคลื่อนไหว รายการจะแสดงที่นี่'}</p></div>`;
+    return txs.map(t => {
+      const m = snapshot.state?.members?.[t.studentCode];
+      const kind = t.isInterest ? 'interest' : t.type;
+      return `<button class="transaction-row" data-action="tx-detail" data-id="${esc(t.id)}"><span class="transaction-icon ${kind}">${icon(t.reversalOf ? 'undo' : t.isInterest ? 'percent' : t.type === 'deposit' ? 'down' : 'up')}</span><span class="transaction-copy"><span class="transaction-title">${esc(options.admin ? `${m?.nick || t.studentCode} · ${txTitle(t)}` : txTitle(t))}</span><span class="transaction-meta">${esc(dateFmt(t.createdAt))} · ${esc(timeFmt(t.createdAt))}${t.reversalOf ? ' · กลับรายการ' : ''}</span></span><span class="transaction-amount ${t.type === 'deposit' ? 'positive' : 'negative'}">${esc(txAmount(t))}<span>บาท</span></span></button>`;
+    }).join('');
+  }
+  function insightCard(code = null) {
+    const txs = transactions(code), days = chartDays;
+    const dates = Array.from({length:days},(_, i) => { const d = new Date(); d.setDate(d.getDate() - (days-1-i)); return d; });
+    const buckets = dates.map(d => ({date:d,value:txs.filter(t=>t.type==='deposit' && dayKey(t.createdAt)===dayKey(d)).reduce((a,t)=>a+t.amountSatang,0)}));
+    const groups = days === 30 ? Array.from({length:6},(_,i)=>({date:buckets[i*5].date,value:buckets.slice(i*5,i*5+5).reduce((a,d)=>a+d.value,0)})) : buckets;
+    const max = Math.max(1,...groups.map(d=>d.value));
+    const sum = buckets.reduce((a,d)=>a+d.value,0);
+    return `<section class="section-card insight-card"><div class="section-heading"><div><p class="eyebrow">SMALL STEPS, BIG PICTURE</p><h2 class="section-title">ยอดฝากเข้า</h2></div><div class="segmented" aria-label="ช่วงเวลาสรุป"><button class="segment ${days === 7 ? 'active' : ''}" data-action="chart-range" data-days="7" aria-pressed="${days===7}">7 วัน</button><button class="segment ${days === 30 ? 'active' : ''}" data-action="chart-range" data-days="30" aria-pressed="${days===30}">30 วัน</button></div></div><div class="insight-value">${showBalance || isAdmin() ? `฿${fmt(sum)}` : '฿•••,•••'}</div><p class="insight-subtitle">รวมเงินฝากและดอกเบี้ยใน ${days} วันที่ผ่านมา</p><div class="spark-chart" role="img" aria-label="กราฟยอดฝากเข้า ${days} วัน รวม ${showBalance || isAdmin() ? fmt(sum) : 'ซ่อนยอด'} บาท">${groups.map((d,i)=>`<div class="spark-column"><div class="spark-bar ${i===groups.length-1?'highlight':''}" style="--bar-height:${Math.max(3,Math.round(d.value/max*100))}%" title="${esc(dateFmt(d.date))}: ${showBalance || isAdmin() ? fmt(d.value) : 'ซ่อนยอด'} บาท"></div></div>`).join('')}</div><div class="spark-labels">${groups.map(d=>`<span>${new Date(d.date).toLocaleDateString('th-TH',{timeZone:'Asia/Bangkok',day:'numeric'})}</span>`).join('')}</div><div class="insight-footer"><span class="legend-dot"></span> วันที่ ${esc(dateFmt(dates[0]))} – ${esc(dateFmt(dates[days-1]))}</div></section>`;
+  }
+  function stat(label, value, name, note = '') { return `<div class="stat-card"><div class="stat-top"><span class="stat-label">${label}</span><span class="stat-icon">${icon(name)}</span></div><div class="stat-value">${value}</div>${note ? `<p class="stat-note">${note}</p>` : ''}</div>`; }
+  function adminHome() {
+    const today = dayKey(new Date()); const todays = transactions().filter(t => dayKey(t.createdAt) === today);
+    const unprinted = transactions().filter(t => !t.printedAt).length;
+    return `${demoBanner()}${heading('THE CONTROL ROOM','ภาพรวมบัญชี<span class="greeting-dot">.</span>',`<button class="button button-primary button-small" data-action="transact">${icon('plus')} ฝาก–ถอน</button>`)}<div class="stat-grid">${stat('ยอดเงินรวมทุกบัญชี',`<span class="currency">฿</span>${fmt(totalBalance())}`,'wallet','ยอดรวมทั้งหมด ไม่เปลี่ยนตามการค้นหา')}${stat('สมาชิกที่ใช้งาน',`${members().length}<span class="stat-unit">บัญชี</span>`,'users',`ทั้งหมด ${allMembers().length} บัญชี`)}${stat('รายการวันนี้',`${todays.length}<span class="stat-unit">รายการ</span>`,'activity',`${dateFmt(new Date())}`)}${stat('รอพิมพ์ลงสมุด',`${unprinted}<span class="stat-unit">รายการ</span>`,'book','ยืนยันสถานะหลังตรวจผลพิมพ์')}</div><div class="quick-actions admin-quick-actions">${quick('transact','wallet','ฝาก–ถอน')}${quick('member-add','plus','เพิ่มสมาชิก')}${quick('interest','percent','จ่ายดอกเบี้ย')}${quick('import','upload','นำเข้าข้อมูล')}</div><div class="dashboard-grid"><div class="main-column"><section class="section-card"><div class="section-heading"><div><p class="eyebrow">ALL THE LATEST</p><h2 class="section-title">ความเคลื่อนไหวล่าสุด</h2></div><button class="text-btn" data-action="nav" data-view="history">ดูทั้งหมด ${icon('arrow')}</button></div><div class="transaction-list">${txRows(transactions().slice(0,6),{admin:true})}</div></section><section class="section-card"><div class="section-heading"><div><p class="eyebrow">YOUR COMMUNITY</p><h2 class="section-title">สมาชิก</h2></div><button class="text-btn" data-action="nav" data-view="members">จัดการ ${icon('arrow')}</button></div><div class="member-list">${memberRows(members().slice(0,3),true)}</div></section></div><div class="side-column">${insightCard()}${distributionCard()}</div></div>`;
+  }
+  function distributionCard() {
+    const sorted = members().map(m=>({...m,balance:balance(m.code)})).filter(m=>m.balance>0).sort((a,b)=>b.balance-a.balance);
+    const total = sorted.reduce((a,m)=>a+m.balance,0);
+    return `<section class="section-card"><div class="section-heading"><div><p class="eyebrow">WEALTH OVERVIEW</p><h2 class="section-title">สัดส่วนยอดเงิน</h2></div>${icon('chart')}</div><div class="section-body distribution-list">${sorted.length ? sorted.slice(0,5).map((m,i)=>`<div class="distribution-row"><div><span>${esc(m.nick || m.code)}</span><strong>${(m.balance/total*100).toFixed(1)}%</strong></div><div class="distribution-track"><span class="distribution-fill" style="width:${m.balance/total*100}%;opacity:${1-i*.13}"></span></div></div>`).join('') : '<p class="form-note">ยังไม่มียอดเงินในบัญชี</p>'}${sorted.length>5 ? `<p class="form-note">แสดง 5 บัญชีที่มียอดสูงสุด จาก ${sorted.length} บัญชี</p>` : ''}</div></section>`;
+  }
+  function memberRows(items, compactView = false) {
+    if (!items.length) return '<div class="empty-state"><h3>ไม่พบสมาชิก</h3><p>ลองค้นหาด้วยชื่อหรือเลขบัญชีอื่น</p></div>';
+    return items.map((m,i)=>`<div class="member-row"><span class="avatar member-avatar" aria-hidden="true">${esc((m.nick || m.name || '?').slice(0,2))}</span><div class="member-main"><p class="member-name">${esc(m.nick || m.name)} ${m.status==='archived' ? '<span class="badge badge-muted">ปิดบัญชี</span>' : ''}</p><p class="member-meta">${esc(accountFmt(m.code))}${!compactView ? ` · ${esc(m.name)}` : ''}</p><p class="member-balance">฿${fmt(balance(m.code))}</p></div><div class="member-actions"><button class="button button-secondary button-small" data-action="member-detail" data-code="${esc(m.code)}" aria-label="ดูบัญชี ${esc(m.nick || m.code)}">${compactView ? icon('chevron') : 'ดูบัญชี'}</button></div></div>`).join('');
+  }
+  function membersView() {
+    return `${demoBanner()}${heading('YOUR COMMUNITY','สมาชิกทั้งหมด',`<button class="button button-primary button-small" data-action="member-add">${icon('plus')} เพิ่มสมาชิก</button>`)}<div class="toolbar"><div class="search-field">${icon('search')}<label class="sr-only" for="member-search">ค้นหาสมาชิก</label><input id="member-search" placeholder="ค้นหาชื่อ หรือเลขบัญชี" value="${esc(memberSearch)}" type="search" autocomplete="off"></div><span id="member-count" class="badge badge-muted">${members().length} บัญชีที่ใช้งาน</span></div><section class="section-card"><div class="section-heading"><h2 class="section-title">บัญชีสมาชิก</h2><span class="form-note">ยอดเงิน · บาท</span></div><div id="member-results" class="member-list">${memberRows(filteredMembers())}</div></section>`;
+  }
+  function filteredMembers() { const q = memberSearch.trim().toLocaleLowerCase(); return allMembers().filter(m=>[m.code,m.nick,m.name].some(s=>String(s||'').toLocaleLowerCase().includes(q))).sort((a,b)=>(a.status==='archived')-(b.status==='archived') || a.code.localeCompare(b.code)); }
+  function historyView() {
+    return `${demoBanner()}${heading('EVERY MOVE MATTERS','รายการเคลื่อนไหว',`<button class="button button-secondary button-small" data-action="statement" ${!isAdmin()?`data-code="${esc(session().accountCode)}"`:''}>${icon('download')} ใบแจ้งยอด</button>`)}<div class="toolbar"><div class="search-field">${icon('search')}<label class="sr-only" for="history-search">ค้นหารายการ</label><input id="history-search" type="search" placeholder="${isAdmin()?'ค้นหาชื่อ เลขบัญชี หรือบันทึก':'ค้นหาประเภทรายการหรือบันทึก'}" value="${esc(historySearch)}"></div></div><div class="history-controls"><div class="filter-chips" aria-label="ประเภทของรายการ">${[['all','ทั้งหมด'],['deposit','ฝากเข้า'],['withdraw','ถอนออก'],['interest','ดอกเบี้ย']].map(([v,title])=>`<button class="chip ${historyFilter===v?'active':''}" data-action="filter" data-filter="${v}" aria-pressed="${historyFilter===v}">${title}</button>`).join('')}</div><div class="field history-date"><label for="history-period" class="sr-only">ช่วงเวลา</label><select id="history-period"><option value="all">ทุกช่วงเวลา</option><option value="7">7 วันที่ผ่านมา</option><option value="30">30 วันที่ผ่านมา</option><option value="90">90 วันที่ผ่านมา</option></select></div></div><section class="section-card"><div class="section-heading"><h2 class="section-title">ประวัติทั้งหมด</h2><span id="history-count" class="badge badge-muted"></span></div><div id="history-results" class="transaction-list"></div></section>`;
+  }
+  function refreshHistory() {
+    const container = $('#history-results'); if (!container) return;
+    const period = Number($('#history-period')?.value) || 0, cutoff = Date.now() - period*86400000;
+    const q = historySearch.trim().toLocaleLowerCase();
+    const list = transactions(isAdmin()?null:session().accountCode).filter(t=> {
+      const m = snapshot.state.members[t.studentCode];
+      return (historyFilter==='all' || (historyFilter==='interest'?t.isInterest:t.type===historyFilter)) && (!period || Date.parse(t.createdAt)>=cutoff) && (!q || [t.note,t.studentCode,m?.nick,m?.name,txTitle(t)].some(s=>String(s||'').toLocaleLowerCase().includes(q)));
+    });
+    container.innerHTML = txRows(list,{admin:isAdmin(),filtered:true}); $('#history-count').textContent = `${list.length} รายการ`;
+  }
+  function insightsView() {
+    const code = session().accountCode, txs = transactions(code);
+    const deposits = txs.filter(t=>t.type==='deposit').reduce((a,t)=>a+t.amountSatang,0);
+    const withdrawals = txs.filter(t=>t.type==='withdraw').reduce((a,t)=>a+t.amountSatang,0);
+    const interest = txs.filter(t=>t.isInterest).reduce((a,t)=>a+t.amountSatang,0);
+    const amount = n => showBalance ? `฿${fmt(n)}` : '฿•••,•••';
+    return `${demoBanner()}${heading('A CLEARER PICTURE','สรุปบัญชีของคุณ',`<button class="icon-btn" data-action="toggle-balance" aria-label="${showBalance?'ซ่อนยอด':'แสดงยอด'}">${icon(showBalance?'eye':'eyeOff')}</button>`)}<div class="stat-grid">${stat('ยอดเงินคงเหลือ',amount(balance(code)),'wallet')}${stat('ฝากเข้าสะสม',amount(deposits),'down','รวมดอกเบี้ยและรายการกลับบัญชี')}${stat('ถอนออกสะสม',amount(withdrawals),'up')}${stat('ดอกเบี้ยที่ได้รับ',amount(interest),'percent')}</div><div class="dashboard-grid"><div class="main-column">${insightCard(code)}</div><div class="side-column"><section class="section-card"><div class="section-heading"><h2 class="section-title">ข้อมูลบัญชี</h2>${icon('book')}</div><div class="section-body review-grid"><div class="review-row"><span>รายการทั้งหมด</span><strong>${txs.length} รายการ</strong></div><div class="review-row"><span>เปิดบัญชีเมื่อ</span><strong>${dateFmt(ownMember().createdAt,{year:'numeric'})}</strong></div><div class="review-row"><span>รายการล่าสุด</span><strong>${txs[0]?dateFmt(txs[0].createdAt):'ยังไม่มี'}</strong></div><button class="button button-secondary button-wide" data-action="statement" data-code="${esc(code)}">${icon('file')} ดูใบแจ้งยอดทั้งหมด</button></div></section></div></div>`;
+  }
+  function profileView() {
+    const m = ownMember();
+    return `${demoBanner()}${heading('YOUR PRIVATE SPACE','บัญชีของฉัน')}<div class="dashboard-grid"><div class="main-column"><section class="section-card profile-card"><div class="profile-hero"><span class="avatar profile-avatar">${esc((m.nick||'T').slice(0,2))}</span><h2>${esc(m.nick)}</h2><p>${esc(m.name)}</p><span class="badge badge-gold">${m.status==='archived'?'ปิดบัญชี':'PRIVATE MEMBER'}</span></div><div class="profile-grid"><div class="profile-field"><span>เลขบัญชี</span><strong class="profile-value">${esc(accountFmt(m.code))}</strong></div><div class="profile-field"><span>ชื่อบัญชี</span><strong class="profile-value">${esc(m.name)}</strong></div><div class="profile-field"><span>สกุลเงิน</span><strong class="profile-value">THB · บาทไทย</strong></div><div class="profile-field"><span>วันที่เปิดบัญชี</span><strong class="profile-value">${dateFmt(m.createdAt,{year:'numeric'})}</strong></div></div></section></div><div class="side-column"><section class="section-card settings-list"><button class="settings-row" data-action="copy" data-code="${esc(m.code)}">${icon('copy')}<span>คัดลอกเลขบัญชี</span>${icon('chevron')}</button><button class="settings-row" data-action="statement" data-code="${esc(m.code)}">${icon('file')}<span>ใบแจ้งยอดบัญชี</span>${icon('chevron')}</button><button class="settings-row" data-action="privacy">${icon('shield')}<span>ข้อมูลและความเป็นส่วนตัว</span>${icon('chevron')}</button><button class="settings-row" data-action="logout">${icon('logout')}<span>ออกจากระบบ</span>${icon('chevron')}</button></section><div class="notice">${icon('info')}<p>หากชื่อหรือข้อมูลบัญชีไม่ถูกต้อง กรุณาติดต่อผู้ดูแลเพื่อแก้ไขข้อมูล</p></div></div></div>`;
+  }
+  function toolsView() {
+    const runs = Object.values(snapshot.state.interestRuns || {});
+    return `${demoBanner()}${heading('BUILT FOR YOUR WORKFLOW','เครื่องมือผู้ดูแล')}<div class="tool-grid">${tool('interest','percent','จ่ายดอกเบี้ย','ดูยอดก่อนยืนยัน และป้องกันจ่ายซ้ำในเดือนเดิม','จัดการดอกเบี้ย')}${tool('import','upload','นำเข้ารายชื่อ','รองรับ CSV พร้อมตรวจบัญชีซ้ำก่อนบันทึก','นำเข้า CSV')}${tool('export','download','สำรองข้อมูล','ดาวน์โหลดข้อมูลปัจจุบันเป็น JSON เก็บไว้ตรวจสอบ','ดาวน์โหลดข้อมูล')}${tool('report','chart','รายงานภาพรวม','พิมพ์รายงานยอดสมาชิกทั้งหมด หรือบันทึกเป็น PDF','เปิดรายงาน')}${tool('csv-template','file','แบบฟอร์มนำเข้า','ไฟล์ CSV ตัวอย่างพร้อมหัวคอลัมน์ภาษาไทย','ดาวน์โหลดแบบฟอร์ม')}${tool('about','shield','ข้อมูลระบบ',snapshot.mode==='demo'?'กำลังใช้ข้อมูลจำลองที่บันทึกในเบราว์เซอร์':snapshot.mode==='legacy'?'เชื่อมฐานข้อมูลเดิม และใช้วิธีเข้าสู่ระบบเดิม':'เชื่อมต่อ Firebase และกำหนดสิทธิ์ตามบัญชีผู้ใช้','ดูรายละเอียด')}</div><section class="section-card"><div class="section-heading"><h2 class="section-title">รอบจ่ายดอกเบี้ย</h2><span class="badge badge-muted">${runs.length} รอบ</span></div><div class="section-body">${runs.length?runs.map(r=>`<div class="review-row"><span>${esc(r.period || r.id || '-')}</span><strong>${r.inferred ? 'รายการเดิม · อ้างอิงวันที่บันทึก' : r.ratePercent == null ? 'รายการเดิม' : esc(r.ratePercent) + '%'} · ฿${fmt(r.totalInterestSatang ?? r.totalSatang ?? r.totalInterestPaidSatang ?? 0)}</strong></div>`).join(''):'<p class="form-note">ยังไม่มีรอบจ่ายดอกเบี้ย</p>'}</div></section>${snapshot.mode==='demo'?'<button class="button button-ghost demo-reset" data-action="reset-demo">ล้างข้อมูลทดลองและเริ่มใหม่</button>':''}`;
+  }
+  function tool(action, name, title, description, cta) { return `<section class="section-card tool-card"><div class="tool-icon">${icon(name)}</div><h2>${title}</h2><p>${description}</p><button class="text-btn" data-action="${action}">${cta} ${icon('arrow')}</button></section>`; }
+
+  function openModal(title, body, footer = '', onReady) {
+    closeModal();
+    modal.innerHTML = `<div class="modal-header"><div><p class="eyebrow">TAEBANK / ${snapshot.mode === 'demo' ? 'DEMO SPACE' : 'PRIVATE SPACE'}</p><h2 class="modal-title" id="modal-title">${title}</h2></div><button class="icon-btn modal-close" data-action="modal-close" aria-label="ปิดหน้าต่าง">${icon('close')}</button></div><div class="modal-body">${body}<p id="modal-error" class="form-error" role="alert"></p></div>${footer ? `<div class="modal-footer">${footer}</div>` : ''}`;
+    modal.showModal(); document.body.classList.add('modal-open');
+    if (onReady) onReady(modal);
+  }
+  function closeModal() { if (submitting) return; if (modalCleanup) { modalCleanup(); modalCleanup = null; } modal.close(); document.body.classList.remove('modal-open'); }
+  function modalError(error) { const el = $('#modal-error'); if (el) el.textContent = friendly(error); else toast(friendly(error),'error'); }
+  async function submitMutation(command, success = 'บันทึกเรียบร้อยแล้ว', after) {
+    if (submitting) return;
+    submitting = true;
+    modal.querySelectorAll('button,input,select,textarea').forEach(el=>el.disabled=true);
+    const error = $('#modal-error'); if(error) error.textContent='';
+    try { const result = await window.TaeService.mutate(command); submitting=false; closeModal(); toast(success); if(after) after(result); return result; }
+    catch(e) { submitting=false; modal.querySelectorAll('button,input,select,textarea').forEach(el=>el.disabled=false); modalError(e); }
+  }
+  function memberOptions(code = '') { return members().map(m=>`<option value="${esc(m.code)}" ${code===m.code?'selected':''}>${esc(m.nick)} · ${esc(accountFmt(m.code))}</option>`).join(''); }
+  function transactModal(code = '', type = 'deposit') {
+    if (!members().length) { toast('เพิ่มสมาชิกก่อนทำรายการ','error'); return; }
+    const key = requestKey('transaction');
+    openModal('บันทึกฝาก–ถอน',`<form id="transact-form" class="form-stack"><div class="segmented transact-segments"><button type="button" class="segment ${type==='deposit'?'active':''}" data-type="deposit">${icon('down')} ฝากเข้า</button><button type="button" class="segment ${type==='withdraw'?'active':''}" data-type="withdraw">${icon('up')} ถอนออก</button></div><div class="field"><label for="tx-account">บัญชีสมาชิก</label><select id="tx-account" required>${memberOptions(code)}</select><span id="tx-available" class="field-hint"></span></div><div class="field"><label for="tx-amount">จำนวนเงิน (บาท)</label><input class="amount-input" id="tx-amount" inputmode="decimal" placeholder="0.00" autocomplete="off" required></div><div class="field"><label for="tx-note">บันทึกเพิ่มเติม <span class="optional">ไม่บังคับ</span></label><input id="tx-note" maxlength="160" placeholder="เช่น เงินออมประจำสัปดาห์"></div><div class="notice">${icon('info')}<p>ตรวจชื่อบัญชีและจำนวนเงินก่อนยืนยัน ระบบจะเก็บประวัติของรายการนี้</p></div><button class="button button-primary button-wide" type="submit">ตรวจสอบรายการ ${icon('arrow')}</button></form>`, '', root => {
+      const update = () => { $('#tx-available').textContent=`ยอดคงเหลือ ฿${fmt(balance($('#tx-account').value))}`; }; update();
+      $('#tx-account').onchange=update;
+      root.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{type=b.dataset.type; root.querySelectorAll('[data-type]').forEach(x=>x.classList.toggle('active',x===b));});
+      $('#transact-form').onsubmit = e => { e.preventDefault(); try {
+        const amount = window.TaeCore.moneyToSatang($('#tx-amount').value); const chosen=$('#tx-account').value;
+        if(type==='withdraw' && amount>(window.TaeCore.availableBalance?window.TaeCore.availableBalance(snapshot.state,chosen):balance(chosen))) throw new Error('ยอดเงินไม่เพียงพอสำหรับรายการถอนนี้');
+        const command={action:'transact',idempotencyKey:key,code:chosen,type,amountSatang:amount,note:$('#tx-note').value.trim()};
+        const m=snapshot.state.members[chosen];
+        openModal('ตรวจสอบก่อนบันทึก',`<div class="review-amount ${type==='deposit'?'positive':'negative'}">${type==='deposit'?'+':'−'}฿${fmt(amount)}</div><p class="review-subtitle">${type==='deposit'?'ฝากเข้าบัญชี':'ถอนออกจากบัญชี'}</p><div class="review-grid"><div class="review-row"><span>ชื่อบัญชี</span><strong>${esc(m.nick)}</strong></div><div class="review-row"><span>เลขบัญชี</span><strong>${esc(accountFmt(chosen))}</strong></div><div class="review-row"><span>ยอดหลังทำรายการ</span><strong>฿${fmt(balance(chosen)+(type==='deposit'?amount:-amount))}</strong></div><div class="review-row"><span>บันทึก</span><strong>${esc(command.note || '—')}</strong></div></div>`,`<button class="button button-secondary" data-action="modal-close">ยกเลิก</button><button class="button button-primary" id="confirm-transaction">ยืนยันบันทึก ${icon('check')}</button>`,()=>$('#confirm-transaction').onclick=()=>submitMutation(command,'บันทึกรายการเรียบร้อยแล้ว'));
+      }catch(error){modalError(error);} };
+    });
+  }
+  function memberModal(code = '') {
+    const m = snapshot.state.members[code]; const key=requestKey('member');
+    openModal(m?'แก้ไขข้อมูลสมาชิก':'เพิ่มสมาชิกใหม่',`<form id="member-form" class="form-stack"><div class="field"><label for="member-code">เลขบัญชี 6 หลัก</label><input id="member-code" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" value="${esc(m?.code || '')}" placeholder="เช่น 100006" ${m?'readonly':''} required><span class="field-hint">ใช้ตัวเลข 6 หลัก และต้องไม่ซ้ำกับบัญชีเดิม</span></div><div class="field"><label for="member-nick">ชื่อที่แสดง</label><input id="member-nick" value="${esc(m?.nick || '')}" maxlength="40" placeholder="ชื่อเล่นหรือชื่อเรียก" required></div><div class="field"><label for="member-name">ชื่อ–นามสกุล</label><input id="member-name" value="${esc(m?.name || '')}" maxlength="120" placeholder="ชื่อเจ้าของบัญชี" required></div><button type="submit" class="button button-primary button-wide">${m?'บันทึกการแก้ไข':'สร้างบัญชีสมาชิก'} ${icon('check')}</button></form>`,'',()=>{
+      $('#member-form').onsubmit=e=>{e.preventDefault(); const chosen=$('#member-code').value.trim(); if(!m && snapshot.state.members[chosen]){modalError(new Error('เลขบัญชีนี้มีอยู่แล้ว'));return;} submitMutation({action:'member.save',idempotencyKey:key,code:chosen,nick:$('#member-nick').value.trim(),name:$('#member-name').value.trim()},'บันทึกข้อมูลสมาชิกแล้ว');};
+    });
+  }
+  function memberDetail(code) {
+    const m=snapshot.state.members[code]; if(!m)return;
+    openModal('บัญชีสมาชิก',`<div class="profile-hero compact-profile"><span class="avatar profile-avatar">${esc((m.nick||'T').slice(0,2))}</span><h3>${esc(m.nick)}</h3><p>${esc(m.name)}</p><span class="badge badge-muted">${esc(accountFmt(code))}</span><div class="review-amount">฿${fmt(balance(code))}</div></div><div class="detail-actions">${m.status!=='archived'?`<button class="button button-primary" data-action="transact" data-code="${code}">${icon('wallet')} ฝาก–ถอน</button><button class="button button-secondary" data-action="member-edit" data-code="${code}">${icon('edit')} แก้ไข</button>`:''}<button class="button button-secondary" data-action="passbook" data-code="${code}">${icon('book')} พิมพ์สมุด</button><button class="button button-secondary" data-action="statement" data-code="${code}">${icon('file')} ใบแจ้งยอด</button></div><h3 class="detail-heading">รายการล่าสุด</h3><div class="transaction-list detail-transactions">${txRows(transactions(code).slice(0,5))}</div>${m.status!=='archived'?`<button class="button button-ghost button-wide" data-action="archive" data-code="${code}">ปิดบัญชีสมาชิก</button>`:''}`);
+  }
+  function txDetail(id) {
+    const t=snapshot.state.transactions[id]; if(!t)return;
+    const m=snapshot.state.members[t.studentCode]; const reversed=Object.values(snapshot.state.transactions).some(x=>x.reversalOf===id);
+    openModal('รายละเอียดรายการ',`<div class="transaction-detail-icon transaction-icon ${t.type}">${icon(t.reversalOf?'undo':t.type==='deposit'?'down':'up')}</div><div class="review-amount ${t.type==='deposit'?'positive':'negative'}">${esc(txAmount(t))}</div><p class="review-subtitle">${esc(txTitle(t))}</p><div class="review-grid"><div class="review-row"><span>บัญชี</span><strong>${esc(m?.nick || t.studentCode)} · ${esc(accountFmt(t.studentCode))}</strong></div><div class="review-row"><span>วัน–เวลา</span><strong>${esc(dateFmt(t.createdAt,{year:'numeric'}))} ${esc(timeFmt(t.createdAt))}</strong></div><div class="review-row"><span>บันทึก</span><strong>${esc(t.note || '—')}</strong></div><div class="review-row"><span>สถานะสมุดบัญชี</span><strong>${t.printedAt?'ยืนยันพิมพ์แล้ว':'ยังไม่ยืนยันพิมพ์'}</strong></div><div class="review-row"><span>เลขอ้างอิง</span><strong class="reference-id">${esc(id)}</strong></div>${reversed?'<div class="notice notice-warning">รายการนี้มีรายการกลับบัญชีแล้ว</div>':''}</div>`,isAdmin()&&!reversed&&!t.reversalOf?`<button class="button button-secondary button-wide" id="reverse-entry">${icon('undo')} แก้ไขด้วยรายการกลับบัญชี</button>`:'',()=>{
+      if($('#reverse-entry')) $('#reverse-entry').onclick=()=>{
+        const key=requestKey('reverse'); openModal('กลับรายการบัญชี',`<p class="form-note">ระบบจะสร้างรายการตรงข้าม ฿${fmt(t.amountSatang)} โดยเก็บรายการเดิมไว้ตรวจสอบ หากทำให้ยอดติดลบ ระบบจะไม่อนุญาต</p><form id="reverse-form" class="form-stack"><div class="field"><label for="reverse-reason">เหตุผล</label><textarea id="reverse-reason" required minlength="3" maxlength="160" placeholder="ระบุเหตุผลที่ต้องกลับรายการ"></textarea></div><button class="button button-danger button-wide" type="submit">ยืนยันกลับรายการ</button></form>`,'',()=>$('#reverse-form').onsubmit=e=>{e.preventDefault();submitMutation({action:'reverse',idempotencyKey:key,transactionId:id,reason:$('#reverse-reason').value.trim()},'สร้างรายการกลับบัญชีแล้ว');});
+      };
+    });
+  }
+  function interestModal() {
+    const key=requestKey('interest');
+    openModal('จ่ายดอกเบี้ยให้สมาชิก',`<form id="interest-form" class="form-stack"><div class="field"><label for="interest-period">รอบจ่ายดอกเบี้ย</label><input id="interest-period" type="month" value="${nowMonth()}" required><span class="field-hint">แต่ละเดือนจ่ายได้หนึ่งรอบ เพื่อป้องกันรายการซ้ำ</span></div><div class="field"><label for="interest-rate">อัตราที่จ่ายในรอบนี้ (%)</label><input id="interest-rate" inputmode="decimal" placeholder="เช่น 0.5" required><span class="field-hint">คำนวณจากยอดคงเหลือปัจจุบัน ไม่ใช่อัตรารายปี</span></div><button class="button button-primary button-wide" type="submit">คำนวณยอดก่อนจ่าย ${icon('arrow')}</button></form>`,'',()=>{
+      $('#interest-form').onsubmit=e=>{e.preventDefault();try{
+        const raw=$('#interest-rate').value.trim(); if(!/^\d+(?:\.\d{1,6})?$/.test(raw))throw new Error('กรอกอัตราเป็นตัวเลข ทศนิยมไม่เกิน 6 ตำแหน่ง');
+        const rate=Number(raw),period=$('#interest-period').value; if(!(rate>0&&rate<=100))throw new Error('อัตราต้องมากกว่า 0 และไม่เกิน 100%');
+        if(snapshot.state.interestRuns?.[period])throw new Error('เดือนนี้มีการจ่ายดอกเบี้ยแล้ว');
+        const command={action:'interest',idempotencyKey:key,period,ratePercent:raw};
+        let previewSequence=0;
+        const preview=window.TaeCore.applyMutation(snapshot.state,command,{now:new Date().toISOString(),actor:'preview',idFactory:()=>`preview-${++previewSequence}`});
+        const payouts=preview.result.transactionIds.map(id=>{const tx=preview.state.transactions[id];return {m:snapshot.state.members[tx.studentCode],amount:tx.amountSatang};});
+        const total=preview.result.totalSatang;
+        if(!payouts.length)throw new Error('ไม่มีบัญชีที่ได้รับดอกเบี้ยอย่างน้อย 0.01 บาท');
+        openModal('ตรวจสอบรอบจ่ายดอกเบี้ย',`<div class="review-amount">฿${fmt(total)}</div><p class="review-subtitle">${payouts.length} บัญชี · รอบ ${esc(period)} · อัตรา ${esc(raw)}%</p><div class="preview-table-wrap"><table class="preview-table"><thead><tr><th>สมาชิก</th><th>ดอกเบี้ย (บาท)</th></tr></thead><tbody>${payouts.map(x=>`<tr><td>${esc(x.m.nick)}</td><td>${fmt(x.amount)}</td></tr>`).join('')}</tbody></table></div><div class="notice notice-warning">${icon('info')}<p>ยอดนี้คำนวณจากข้อมูลปัจจุบัน หากยอดบัญชีเปลี่ยนก่อนยืนยัน ระบบจะคำนวณจากยอดล่าสุดอีกครั้ง</p></div>`,`<button class="button button-secondary" data-action="modal-close">ยกเลิก</button><button class="button button-primary" id="interest-confirm">ยืนยันจ่ายดอกเบี้ย</button>`,()=>$('#interest-confirm').onclick=()=>submitMutation({action:'interest',idempotencyKey:key,period,ratePercent:raw},'จ่ายดอกเบี้ยรอบนี้เรียบร้อยแล้ว'));
+      }catch(error){modalError(error);}};
+    });
+  }
+  function parseCSV(text) {
+    text=text.replace(/^\uFEFF/,''); const rows=[]; let row=[],cell='',quoted=false;
+    for(let i=0;i<text.length;i++) { const c=text[i]; if(c==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;} else if(c===','&&!quoted){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);if(row.some(v=>v.trim()))rows.push(row);row=[];cell='';}else cell+=c; }
+    if(quoted)throw new Error('รูปแบบ CSV ไม่ถูกต้อง มีเครื่องหมายคำพูดที่ไม่ปิด');
+    row.push(cell);if(row.some(v=>v.trim()))rows.push(row);if(rows.length<2)throw new Error('ไม่พบแถวข้อมูลในไฟล์');
+    const headers=rows.shift().map(x=>x.trim()); const find=names=>headers.findIndex(h=>names.includes(h));
+    const ci=find(['เลขที่บัญชี','เลขบัญชี','code']),ni=find(['ชื่อที่แสดง','ชื่อเล่น','nick','นมัสการ สามเณร..']),fi=find(['ชื่อจริง','ชื่อ–นามสกุล','ชื่อ-นามสกุล','name']),bi=find(['ยอดคงเหลือ','balance']);
+    if(ci<0||fi<0||bi<0)throw new Error('ต้องมีคอลัมน์ เลขที่บัญชี, ชื่อจริง และยอดคงเหลือ');
+    const seen=new Set(); return rows.map((r,i)=>{const code=String(r[ci]||'').trim(),name=String(r[fi]||'').trim(),nick=String(r[ni]||name).trim(),raw=String(r[bi]||'0').trim();if(!/^\d{6}$/.test(code))throw new Error(`แถว ${i+2}: เลขบัญชีต้องเป็นตัวเลข 6 หลัก`);if(seen.has(code)||snapshot.state.members[code])throw new Error(`แถว ${i+2}: บัญชี ${code} ซ้ำหรือมีอยู่แล้ว`);seen.add(code);if(!name)throw new Error(`แถว ${i+2}: กรุณาระบุชื่อจริง`);const amount=/^0(?:\.0{1,2})?$/.test(raw)?0:window.TaeCore.moneyToSatang(raw);return {code,nick,name,balanceSatang:amount};});
+  }
+  async function fingerprint(text) {
+    if(globalThis.crypto?.subtle) { const bytes=new TextEncoder().encode(text); const digest=await crypto.subtle.digest('SHA-256',bytes); return Array.from(new Uint8Array(digest)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
+    let hash=2166136261;for(const ch of text){hash^=ch.charCodeAt(0);hash=Math.imul(hash,16777619);}return `csv-${(hash>>>0).toString(16)}-${text.length}`;
+  }
+  function importModal() {
+    openModal('นำเข้าบัญชีจาก CSV',`<div class="notice">${icon('info')}<p>ใช้สำหรับเปิดบัญชีใหม่เท่านั้น บัญชีที่มีอยู่แล้วจะไม่ถูกเขียนทับหรือเพิ่มยอดซ้ำ</p></div><div class="field"><label for="csv-file">เลือกไฟล์ CSV (UTF-8)</label><input id="csv-file" type="file" accept=".csv,text/csv"><span class="field-hint">ขนาดไม่เกิน 1 MB และไม่เกิน 300 บัญชีต่อครั้ง</span></div><button class="text-btn" data-action="csv-template">ดาวน์โหลดแบบฟอร์ม ${icon('download')}</button><div id="import-preview"></div>`, '',()=>{
+      $('#csv-file').onchange=async e=>{try{
+        const file=e.target.files[0];if(!file)return;if(file.size>1024*1024)throw new Error('ไฟล์ต้องมีขนาดไม่เกิน 1 MB');
+        const text=await file.text(),rows=parseCSV(text);if(rows.length>300)throw new Error('นำเข้าได้ไม่เกิน 300 บัญชีต่อครั้ง');const batchId=await fingerprint(JSON.stringify(rows)),key=requestKey('import');
+        $('#modal-error').textContent='';
+        $('#import-preview').innerHTML=`<div class="import-summary"><strong>${rows.length} บัญชี</strong><span>ยอดเปิดรวม ฿${fmt(rows.reduce((a,r)=>a+r.balanceSatang,0))}</span></div><div class="preview-table-wrap"><table class="preview-table"><thead><tr><th>บัญชี / ชื่อ</th><th>ยอดเปิด (บาท)</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.code)}<br>${esc(r.nick)}</td><td>${fmt(r.balanceSatang)}</td></tr>`).join('')}</tbody></table></div><button id="confirm-import" class="button button-primary button-wide">ยืนยันนำเข้า ${rows.length} บัญชี</button>`;
+        $('#confirm-import').onclick=()=>submitMutation({action:'import',idempotencyKey:key,batchId,rows},'นำเข้าข้อมูลเรียบร้อยแล้ว');
+      }catch(error){$('#import-preview').innerHTML='';modalError(error);}};
+    });
+  }
+  function archiveModal(code) {
+    const m=snapshot.state.members[code];if(!m)return;
+    if(balance(code)!==0){toast('ปิดบัญชีได้เมื่อยอดเงินเป็น 0.00 บาทเท่านั้น','error');return;}
+    const key=requestKey('archive');openModal('ปิดบัญชีสมาชิก',`<p>ยืนยันปิดบัญชี <strong>${esc(m.nick)} · ${esc(accountFmt(code))}</strong></p><div class="notice">${icon('info')}<p>ประวัติรายการจะถูกเก็บไว้ตรวจสอบ บัญชีที่ปิดแล้วจะไม่สามารถฝาก–ถอนได้</p></div>`,`<button class="button button-secondary" data-action="modal-close">ยกเลิก</button><button class="button button-danger" id="confirm-archive">ยืนยันปิดบัญชี</button>`,()=>$('#confirm-archive').onclick=()=>submitMutation({action:'member.archive',idempotencyKey:key,code},'ปิดบัญชีเรียบร้อยแล้ว'));
+  }
+
+  function printDocument(title, content) {
+    const win=window.open('','_blank'); if(!win){toast('เบราว์เซอร์ปิดกั้นหน้าต่างพิมพ์ กรุณาอนุญาตแล้วลองอีกครั้ง','error');return false;}
+    win.document.open();win.document.write(`<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>body{font-family:"Noto Sans Thai",Tahoma,sans-serif;color:#17201b;margin:32px;font-size:13px}h1{font-size:30px;letter-spacing:-1px;margin:0 0 6px}h2{font-size:18px}.muted{color:#66736a}.header{display:flex;justify-content:space-between;border-bottom:2px solid #17201b;padding-bottom:20px;margin-bottom:20px;gap:20px}.right{text-align:right}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}th{background:#eef0e9;text-align:left}th,td{padding:10px 8px;border-bottom:1px solid #dde1d8}td.amount,th.amount{text-align:right}tfoot{font-weight:bold}.footer{margin-top:28px;font-size:11px;color:#66736a}.print-button{background:#17201b;color:white;padding:12px 20px;border:0;border-radius:8px;cursor:pointer;margin-bottom:22px}.demo{padding:10px;background:#fff3d4;margin-bottom:18px}.passbook td{height:25px;padding:3px 8px}.passbook .blank td{color:transparent}@media print{@page{size:A4;margin:14mm}body{margin:0}.print-button{display:none}thead{display:table-header-group}tr{break-inside:avoid}a{color:inherit}}</style></head><body><button class="print-button" onclick="window.print()">พิมพ์ / บันทึกเป็น PDF</button>${snapshot.mode==='demo'?'<div class="demo">เอกสารตัวอย่าง · ข้อมูลจำลอง ไม่ใช่หลักฐานการรับฝากเงินจริง</div>':''}${content}<p class="footer">จัดทำโดย TaeBank · ${esc(new Date().toLocaleString('th-TH',{timeZone:'Asia/Bangkok'}))}<br>เอกสารนี้แสดงข้อมูล ณ เวลาที่จัดทำ</p></body></html>`);win.document.close();return true;
+  }
+  function statement(code) {
+    if(!code&&isAdmin()){
+      openModal('เลือกบัญชีสำหรับใบแจ้งยอด',`<div class="field"><label for="statement-account">บัญชีสมาชิก</label><select id="statement-account">${memberOptions()}</select></div>`,`<button class="button button-primary button-wide" id="open-statement">${icon('file')} เปิดใบแจ้งยอด</button>`,()=>$('#open-statement').onclick=()=>statement($('#statement-account').value));return;
+    }
+    const m=snapshot.state.members[code];if(!m)return;
+    const sorted=transactions(code).slice().reverse();let running=0;
+    const rows=sorted.map(t=>{running=t.legacyRunningBalanceSatang??(running+(t.type==='deposit'?t.amountSatang:-t.amountSatang));return `<tr><td>${esc(dateFmt(t.createdAt,{year:'numeric'}))}<br><small>${esc(timeFmt(t.createdAt))}</small></td><td>${esc(txTitle(t))}<br><small class="muted">${esc(t.note||'')}</small></td><td class="amount">${t.type==='deposit'?fmt(t.amountSatang):'—'}</td><td class="amount">${t.type==='withdraw'?fmt(t.amountSatang):'—'}</td><td class="amount">${fmt(running)}</td></tr>`;}).join('');
+    printDocument(`ใบแจ้งยอด ${code}`,`<div class="header"><div><h1>taebank.</h1><span class="muted">STATEMENT OF ACCOUNT</span></div><div class="right"><strong>${esc(m.name)}</strong><br>เลขบัญชี ${esc(accountFmt(code))}<br>สกุลเงิน THB</div></div><h2>ใบแจ้งยอดบัญชี · ประวัติทั้งหมด</h2><table><thead><tr><th>วัน–เวลา</th><th>รายการ</th><th class="amount">ฝาก (บาท)</th><th class="amount">ถอน (บาท)</th><th class="amount">คงเหลือ (บาท)</th></tr></thead><tbody>${rows || '<tr><td colspan="5">ยังไม่มีรายการ</td></tr>'}</tbody><tfoot><tr><td colspan="4">ยอดเงินคงเหลือ</td><td class="amount">${fmt(running)}</td></tr></tfoot></table>`);
+  }
+  function report() {
+    const rows=allMembers().map(m=>`<tr><td>${esc(accountFmt(m.code))}</td><td>${esc(m.nick)}</td><td>${esc(m.name)}</td><td>${m.status==='archived'?'ปิดบัญชี':'ใช้งาน'}</td><td class="amount">${fmt(balance(m.code))}</td></tr>`).join('');
+    printDocument('รายงานภาพรวม TaeBank',`<div class="header"><div><h1>taebank.</h1><span class="muted">ACCOUNT OVERVIEW</span></div><div class="right">${dateFmt(new Date(),{year:'numeric'})}<br>${members().length} บัญชีที่ใช้งาน</div></div><h2>สรุปยอดเงินสมาชิกทั้งหมด</h2><table><thead><tr><th>เลขบัญชี</th><th>ชื่อที่แสดง</th><th>ชื่อบัญชี</th><th>สถานะ</th><th class="amount">ยอดคงเหลือ (บาท)</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4">ยอดเงินรวม</td><td class="amount">${fmt(totalBalance())}</td></tr></tfoot></table>`);
+  }
+  function passbookModal(code) {
+    const m=snapshot.state.members[code];if(!m)return;
+    const page=m.pbPage||1,line=m.pbLine||1;
+    const pending=transactions(code).filter(t=>!t.printedAt).slice().reverse();const batch=pending.slice(0,25-line);
+    openModal('ศูนย์พิมพ์สมุดบัญชี',`<div class="review-grid"><div class="review-row"><span>บัญชี</span><strong>${esc(m.nick)} · ${esc(accountFmt(code))}</strong></div><div class="review-row"><span>ตำแหน่งพิมพ์ถัดไป</span><strong>หน้า ${page} บรรทัด ${line}</strong></div><div class="review-row"><span>รายการรอพิมพ์</span><strong>${pending.length} รายการ</strong></div><div class="review-row"><span>รอบนี้พิมพ์ได้</span><strong>${batch.length} รายการ</strong></div></div><div class="notice notice-warning">${icon('info')}<p>หลังพิมพ์ กรุณาตรวจสมุดแล้วกด “ยืนยันพิมพ์สำเร็จ” ระบบจึงจะเลื่อนตำแหน่งและบันทึกสถานะ</p></div>${batch.length?'':'<p class="form-note">ไม่มีรายการใหม่รอพิมพ์</p>'}`,batch.length?`<button class="button button-primary button-wide" id="prepare-passbook">${icon('print')} เปิดหน้าพิมพ์สมุด</button>`:'',()=>{
+      if(!batch.length)return;
+      $('#prepare-passbook').onclick=()=>{
+        const chronological=transactions(code).slice().reverse();const runningById=new Map();let running=0;chronological.forEach(t=>{running=t.legacyRunningBalanceSatang??(running+(t.type==='deposit'?t.amountSatang:-t.amountSatang));runningById.set(t.id,running);});
+        const blanks=Array.from({length:line-1},()=>'<tr class="blank"><td colspan="5">.</td></tr>').join('');
+        const rows=batch.map(t=>`<tr><td>${esc(dateFmt(t.createdAt))}</td><td>${t.isInterest?'INT':t.reversalOf?'REV':t.type==='deposit'?'DEP':'WTD'}</td><td class="amount">${t.type==='withdraw'?fmt(t.amountSatang):''}</td><td class="amount">${t.type==='deposit'?fmt(t.amountSatang):''}</td><td class="amount">${fmt(runningById.get(t.id))}</td></tr>`).join('');
+        if(!printDocument(`สมุดบัญชี ${code} หน้า ${page}`,`<div class="header"><div><h1>taebank.</h1><p>สมุดบัญชี · หน้า ${page}</p></div><div class="right">${esc(m.name)}<br>${esc(accountFmt(code))}</div></div><table class="passbook"><thead><tr><th>วันที่</th><th>รหัส</th><th class="amount">ถอน</th><th class="amount">ฝาก</th><th class="amount">คงเหลือ</th></tr></thead><tbody>${blanks}${rows}</tbody></table>`))return;
+        const key=requestKey('print');
+        openModal('ตรวจผลพิมพ์ก่อนยืนยัน',`<div class="review-grid"><div class="review-row"><span>บัญชี</span><strong>${esc(m.nick)}</strong></div><div class="review-row"><span>ตำแหน่ง</span><strong>หน้า ${page} บรรทัด ${line}–${line+batch.length-1}</strong></div><div class="review-row"><span>จำนวน</span><strong>${batch.length} รายการ</strong></div></div><div class="notice notice-warning">${icon('info')}<p>กดยืนยันเมื่อเห็นรายการในสมุดครบและถูกต้องแล้วเท่านั้น หากยกเลิกหน้าต่างพิมพ์ ให้เลือก “ยังไม่สำเร็จ”</p></div>`,`<button class="button button-secondary" data-action="modal-close">ยังไม่สำเร็จ</button><button class="button button-primary" id="confirm-print">ยืนยันพิมพ์สำเร็จ</button>`,()=>$('#confirm-print').onclick=()=>submitMutation({action:'print.confirm',idempotencyKey:key,code,transactionIds:batch.map(t=>t.id),page,line},'ยืนยันผลพิมพ์และอัปเดตตำแหน่งสมุดแล้ว'));
+      };
+    });
+  }
+  async function copyAccount(code) { try {if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(code);toast('คัดลอกเลขบัญชีแล้ว');}else{openModal('เลขบัญชี',`<div class="field"><label for="copy-number">เลือกและคัดลอกเลขบัญชีนี้</label><input id="copy-number" value="${esc(code)}" readonly></div>`,'',()=>$('#copy-number').select());}}catch{openModal('เลขบัญชี',`<div class="field"><label for="copy-number">เลือกและคัดลอกเลขบัญชีนี้</label><input id="copy-number" value="${esc(code)}" readonly></div>`,'',()=>$('#copy-number').select());} }
+
+  document.addEventListener('click', async e => {
+    const b=e.target.closest('[data-action]');if(!b)return;e.preventDefault();if(submitting)return;
+    const action=b.dataset.action,code=b.dataset.code;
+    try{
+      if(action==='nav'){closeModal();setView(b.dataset.view);refreshHistory();}
+      else if(action==='login-role'){loginRole=b.dataset.role;renderLogin();}
+      else if(action==='demo-member'||action==='demo-admin'){b.disabled=true;await window.TaeService.signIn({demoRole:action==='demo-admin'?'admin':'member'});setView('home');}
+      else if(action==='logout'){closeModal();activeView='home';await window.TaeService.signOut();toast('ออกจากระบบแล้ว');}
+      else if(action==='toggle-balance'){showBalance=!showBalance;render();refreshHistory();}
+      else if(action==='copy')await copyAccount(code||session().accountCode);
+      else if(action==='modal-close')closeModal();
+      else if(action==='chart-range'){chartDays=Number(b.dataset.days);render();}
+      else if(action==='filter'){historyFilter=b.dataset.filter;const period=$('#history-period')?.value;render();if(period&&$('#history-period'))$('#history-period').value=period;refreshHistory();}
+      else if(action==='tx-detail')txDetail(b.dataset.id);
+      else if(action==='transact'&&isAdmin())transactModal(code);
+      else if(action==='member-add'&&isAdmin())memberModal();
+      else if(action==='member-edit'&&isAdmin())memberModal(code);
+      else if(action==='member-detail'&&isAdmin())memberDetail(code);
+      else if(action==='interest'&&isAdmin())interestModal();
+      else if(action==='import'&&isAdmin())importModal();
+      else if(action==='archive'&&isAdmin())archiveModal(code);
+      else if(action==='passbook'&&isAdmin())passbookModal(code);
+      else if(action==='statement')statement(code||(!isAdmin()?session().accountCode:''));
+      else if(action==='report'&&isAdmin())report();
+      else if(action==='export'&&isAdmin()){download(`TaeBank-backup-${dayKey(new Date())}.json`,window.TaeService.exportData());toast('ดาวน์โหลดข้อมูลสำรองแล้ว');}
+      else if(action==='csv-template'&&isAdmin())download('TaeBank-import-template.csv','\uFEFFเลขที่บัญชี,ชื่อที่แสดง,ชื่อจริง,ยอดคงเหลือ\r\n100006,สมาชิกใหม่,ชื่อ นามสกุล,1000.00\r\n','text/csv;charset=utf-8');
+      else if(action==='reset-demo'&&isAdmin()&&snapshot.mode==='demo')openModal('เริ่มข้อมูลทดลองใหม่',`<p>รายการที่คุณทดลองในเบราว์เซอร์นี้จะถูกแทนที่ด้วยข้อมูลตัวอย่างตั้งต้น</p>`,`<button class="button button-secondary" data-action="modal-close">ยกเลิก</button><button class="button button-danger" id="reset-confirm">เริ่มใหม่</button>`,()=>$('#reset-confirm').onclick=async()=>{await window.TaeService.resetDemo();closeModal();toast('คืนข้อมูลตัวอย่างแล้ว');});
+      else if(action==='privacy')openModal('ข้อมูลและความเป็นส่วนตัว',`<div class="form-stack"><p>${snapshot.mode==='legacy'?'เว็บนี้ใช้ฐานข้อมูลและวิธีเข้าสู่ระบบเดิม โดยแสดงข้อมูลตามบัญชีที่เลือก สิทธิ์ฐานข้อมูลยังเป็นการตั้งค่าของระบบเดิม':'บัญชีสมาชิกเข้าถึงข้อมูลของตนเอง ส่วนผู้ดูแลจัดการข้อมูลตามสิทธิ์ที่ได้รับ'}</p><p>${snapshot.mode==='demo'?'โหมดนี้เก็บข้อมูลจำลองไว้ในเบราว์เซอร์ ไม่ได้ส่งไปฐานข้อมูลธนาคารจริง คุณล้างข้อมูลได้จากหน้าผู้ดูแล › เครื่องมือ':'ข้อมูลบัญชีเชื่อมต่อกับ Firebase ของผู้ดูแลระบบ หากต้องการแก้ไขข้อมูลส่วนตัว กรุณาติดต่อผู้ดูแล'}</p><p>ควรออกจากระบบทุกครั้งเมื่อใช้เครื่องร่วมกับผู้อื่น</p></div>`);
+      else if(action==='about')openModal('TaeBank Mobile',`<div class="profile-hero"><div class="brand-lockup">${brand()}</div><p>ทุกยอดเงิน ชัดเจนกว่าเดิม</p><span class="badge badge-gold">${snapshot.mode==='demo'?'DEMO / ข้อมูลจำลอง':'FIREBASE / เชื่อมต่อระบบจริง'}</span></div><div class="review-grid"><div class="review-row"><span>สิทธิ์ผู้ใช้</span><strong>${isAdmin()?'ผู้ดูแลระบบ':'สมาชิก'}</strong></div><div class="review-row"><span>การจัดเก็บเงิน</span><strong>${snapshot.mode==='legacy'?'รูปแบบข้อมูลเดิม':'จำนวนเต็มหน่วยสตางค์'}</strong></div><div class="review-row"><span>การแก้รายการ</span><strong>เก็บประวัติด้วยรายการกลับบัญชี</strong></div></div>`);
+    }catch(error){toast(friendly(error),'error');b.disabled=false;}
+  });
+  document.addEventListener('input',e=>{
+    if(e.target.id==='member-search'){memberSearch=e.target.value;$('#member-results').innerHTML=memberRows(filteredMembers());$('#member-count').textContent=`พบ ${filteredMembers().length} บัญชี`;}
+    if(e.target.id==='history-search'){historySearch=e.target.value;refreshHistory();}
+  });
+  document.addEventListener('change',e=>{if(e.target.id==='history-period')refreshHistory();});
+  document.addEventListener('submit',async e=>{
+    if(e.target.id!=='login-form')return;e.preventDefault();const button=$('button[type="submit"]',e.target);button.disabled=true;$('#login-error').textContent='';
+    try{const credentials=snapshot.mode==='legacy'?(loginRole==='member'?{accountCode:$('#login-account').value.trim()}:{adminPin:$('#login-admin-pin').value,adminMasterKey:$('#login-master-key').value}):{email:$('#login-email').value.trim(),password:$('#login-password').value};await window.TaeService.signIn(credentials);activeView='home';render();}catch(error){$('#login-error').textContent=friendly(error);button.disabled=false;}
+  });
+  modal.addEventListener('cancel',e=>{if(submitting)e.preventDefault();else document.body.classList.remove('modal-open');});
+  modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
+  async function init() {
+    try{
+      const status=await window.TaeService.init();snapshot.mode=status.mode;
+      window.TaeService.subscribe(next=>{const oldSession=snapshot.session?.uid;snapshot=next;if(!next.session&&oldSession)activeView='home';render();refreshHistory();if(next.warning&&next.warning!==latestWarning){latestWarning=next.warning;toast(next.warning,'error');}});
+      snapshot=window.TaeService.getSnapshot();render();refreshHistory();
+    }catch(error){app.innerHTML=`<main class="login-shell"><div class="empty-state">${icon('info')}<h1>ยังเปิดระบบไม่ได้</h1><p>${esc(friendly(error))}</p><p>ตรวจสอบการตั้งค่า หรือเปลี่ยนเป็นโหมดตัวอย่างใน firebase-config.js</p></div></main>`;}
+  }
+  init();
+})();
+
+</script>
+</body>
+</html>

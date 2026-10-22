@@ -1,0 +1,10 @@
+{
+  "name": "taebank-mobile",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Mobile-first Thai account management UI and Firebase starter",
+  "scripts": {
+    "test": "node --test tests/core.test.cjs tests/service.test.cjs tests/firebase-readiness.test.cjs tests/legacy-service.test.cjs",
+    "check": "node --check app.js && node --check core.js && node --check service.js && node --check firebase/functions/index.cjs"
+  }
+}

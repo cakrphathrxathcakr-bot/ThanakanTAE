@@ -1,0 +1,19 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "bank": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": false,
+      "members": {
+        "$code": {
+          ".read": "auth != null && auth.token.accountCode === $code"
+        }
+      },
+      "transactions": {
+        ".read": "auth != null && auth.token.accountCode != null && query.orderByChild === 'studentCode' && query.equalTo === auth.token.accountCode",
+        ".indexOn": ["studentCode", "createdAt"]
+      }
+    }
+  }
+}
